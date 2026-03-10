@@ -1505,6 +1505,8 @@
     }
 
     .config-item-arrow { opacity: 0.4; }
+    .config-item-mobile-only { display: none; }
+    .stats-back-mobile { display: none; }
 
     /* ─── ESTATÍSTICAS ─── */
     #page-estatisticas { padding: 36px 40px; }
@@ -2069,6 +2071,9 @@
       /* Sub-páginas de config */
       .config-list { max-width: 100%; }
 
+      .config-item-mobile-only { display: flex; }
+      .stats-back-mobile { display: flex; }
+
       /* ══════════════════════
          BOTTOM NAV
       ══════════════════════ */
@@ -2393,6 +2398,12 @@
 
     <!-- ESTATÍSTICAS -->
     <div class="page" id="page-estatisticas">
+      <div class="detail-back stats-back-mobile" onclick="navigateTo('config')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        Configurações
+      </div>
       <div class="page-header">
         <h1 class="page-title">Estatísticas</h1>
       </div>
@@ -2477,6 +2488,13 @@
             <div class="config-item-text">
               <span class="config-item-label">Tutorial</span>
               <span class="config-item-desc">Aprenda a usar os recursos principais do Okiru.</span>
+            </div>
+            <img src="./icons/angle-right.svg" width="16" height="16" class="config-item-arrow" />
+          </div>
+          <div class="config-item config-item-mobile-only" onclick="navigateTo('estatisticas')">
+            <div class="config-item-text">
+              <span class="config-item-label">Estatísticas</span>
+              <span class="config-item-desc">Veja seus dados de consumo de animes.</span>
             </div>
             <img src="./icons/angle-right.svg" width="16" height="16" class="config-item-arrow" />
           </div>
@@ -3459,6 +3477,13 @@
   // ─── ESTATÍSTICAS ───
   let genreChartInstance = null;
 
+  function navigateTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-detail')?.classList.remove('active');
+    document.getElementById('page-' + page)?.classList.add('active');
+    if (page === 'estatisticas') renderStatsMonth();
+  }
+
   function renderStatsMonth() {
     const list = document.getElementById('statsMonthList');
     if (!list) return;
@@ -3505,7 +3530,7 @@
       a.genres.forEach(g => { counts[g] = (counts[g] || 0) + 1; });
     });
 
-    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 4);
 
     if (!entries.length) {
       canvas.style.display = 'none';
