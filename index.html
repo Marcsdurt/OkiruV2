@@ -548,6 +548,17 @@
       transition: width 0.3s ease;
     }
 
+    .ep-warning {
+      font-size: 0.7857rem;
+      color: var(--secondary);
+      margin-top: 6px;
+      min-height: 1.2em;
+      transition: opacity 0.2s;
+    }
+
+    .ep-warning.error { color: #c0392b; }
+    .ep-warning.info  { color: var(--secondary); }
+
     /* ─── DETAIL EXTRA FIELDS ─── */
     .detail-fields-row {
       margin-top: 24px;
@@ -1013,6 +1024,17 @@
       color: #e55;
       margin-top: 8px;
       display: none;
+    }
+
+    .smodal-duplicate-warning {
+      font-size: 0.7857rem;
+      color: var(--secondary);
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: var(--hover);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      line-height: 1.5;
     }
 
     /* ─── DELETE POPUP ─── */
@@ -1632,6 +1654,49 @@
     @media (max-width: 640px) {
       #page-estatisticas { padding: 24px 16px; }
     }
+    /* ─── TUTORIAL ─── */
+    #tutorialOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      cursor: pointer;
+    }
+
+    #tutorialBalloon {
+      position: fixed;
+      background: #0A0A0A;
+      color: #fff;
+      border-radius: 8px;
+      padding: 12px 14px 10px;
+      max-width: 230px;
+      font-size: 0.8214rem;
+      line-height: 1.5;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      pointer-events: none;
+      animation: balloonPop 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    @keyframes balloonPop {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    #tutorialText { margin-bottom: 6px; }
+
+    .tutorial-hint {
+      font-size: 0.7143rem;
+      opacity: 0.5;
+      font-style: italic;
+    }
+
+    .tutorial-arrow {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #0A0A0A;
+      transform: rotate(45deg);
+    }
+
     .acess-section {
       max-width: 420px;
     }
@@ -2538,7 +2603,7 @@
           <div class="detail-share" title="Apagar anime" onclick="showDeletePopup()">
             <img src="./icons/trash.svg" />
           </div>
-          <div class="detail-share" title="(em breve)">
+          <div class="detail-share" title="Tutorial" onclick="startTutorial()">
             <img src="./icons/question.svg" />
           </div>
           <div class="detail-share" id="detailFavoriteBtn" title="Favoritar" onclick="toggleFavorite()">
@@ -2561,7 +2626,9 @@
         <div class="progress-label">
           <span class="progress-title">Progresso</span>
           <div class="progress-inputs">
-            <input class="progress-num" id="detailEpWatched" type="number" min="0" value="0" oninput="updateProgress()" />
+            <input class="progress-num" id="detailEpWatched" type="number" min="0" value="0"
+              oninput="validateEpWatched(this)"
+              onchange="validateEpWatched(this)" />
             <span class="progress-sep">/</span>
             <input class="progress-num" id="detailEpTotal" type="number" min="0" value="0" oninput="updateProgress()" />
             <span class="progress-sep" style="margin-left:2px;">eps</span>
@@ -2570,6 +2637,7 @@
         <div class="progress-bar-wrap">
           <div class="progress-bar-fill" id="detailProgressFill" style="width:0%"></div>
         </div>
+        <div class="ep-warning" id="epWarning"></div>
       </div>
 
       <div class="detail-fields-row">
@@ -2597,6 +2665,15 @@
         <div id="seasonsList"></div>
       </div>
     </div>
+
+  <!-- TUTORIAL OVERLAY -->
+  <div id="tutorialOverlay" style="display:none;" onclick="tutorialNext()">
+    <div id="tutorialBalloon">
+      <div id="tutorialText"></div>
+      <div class="tutorial-hint">clique na tela para seguir</div>
+      <div class="tutorial-arrow" id="tutorialArrow"></div>
+    </div>
+  </div>
 
   </main>
 
@@ -2633,7 +2710,9 @@
       <div class="smodal-section">
         <span class="smodal-label">Progresso</span>
         <div class="smodal-prog-inputs">
-          <input class="smodal-prog-num" id="smodalEpWatched" type="number" min="0" value="0" oninput="updateSmodalProgress()" />
+          <input class="smodal-prog-num" id="smodalEpWatched" type="number" min="0" value="0"
+            oninput="validateSmodalEpWatched(this)"
+            onchange="validateSmodalEpWatched(this)" />
           <span style="color:var(--secondary)">/</span>
           <input class="smodal-prog-num" id="smodalEpTotal" type="number" min="0" value="0" oninput="updateSmodalProgress()" />
           <span style="color:var(--secondary); margin-left:2px;">eps</span>
@@ -2641,6 +2720,7 @@
         <div class="progress-bar-wrap">
           <div class="progress-bar-fill" id="smodalProgressFill" style="width:0%"></div>
         </div>
+        <div class="ep-warning" id="smodalEpWarning"></div>
       </div>
 
       <div class="smodal-section">
@@ -2662,6 +2742,7 @@
         <button class="smodal-btn-save" onclick="saveSmodalAnime()">Salvar</button>
         <button class="smodal-btn-back" onclick="closeSmodal()">Voltar</button>
       </div>
+      <div class="smodal-duplicate-warning" id="smodalDuplicateWarning" style="display:none;"></div>
 
     </div>
   </div>
@@ -2909,6 +2990,40 @@
     renderLists();
   }
 
+  function validateEpWatched(input) {
+    const total = parseInt(document.getElementById('detailEpTotal').value) || 0;
+    let val = parseInt(input.value);
+    const warningEl = document.getElementById('epWarning');
+
+    if (isNaN(val) || val < 0) val = 0;
+
+    if (total > 0 && val > total) {
+      // Revert to max allowed
+      input.value = total;
+      val = total;
+      warningEl.textContent = 'Digite um valor menor ou igual ao número total de episódios.';
+      warningEl.className = 'ep-warning error';
+      clearTimeout(input._warnTimer);
+      input._warnTimer = setTimeout(() => {
+        warningEl.textContent = '';
+        warningEl.className = 'ep-warning';
+      }, 3000);
+    } else if (total > 0 && val === total) {
+      warningEl.textContent = 'Este é o último episódio.';
+      warningEl.className = 'ep-warning info';
+      clearTimeout(input._warnTimer);
+      input._warnTimer = setTimeout(() => {
+        warningEl.textContent = '';
+        warningEl.className = 'ep-warning';
+      }, 3000);
+    } else {
+      warningEl.textContent = '';
+      warningEl.className = 'ep-warning';
+    }
+
+    updateProgress();
+  }
+
   function updateProgress() {
     const watched = parseInt(document.getElementById('detailEpWatched').value) || 0;
     const total   = parseInt(document.getElementById('detailEpTotal').value) || 0;
@@ -3015,6 +3130,9 @@
     // reset fields
     document.querySelectorAll('.smodal-list-opt').forEach(o => o.classList.remove('active'));
     document.getElementById('smodalRequiredHint').style.display = 'none';
+    document.getElementById('smodalDuplicateWarning').style.display = 'none';
+    const smodalEpWarn = document.getElementById('smodalEpWarning');
+    if (smodalEpWarn) { smodalEpWarn.textContent = ''; smodalEpWarn.className = 'ep-warning'; }
     document.getElementById('smodalEpWatched').value = 0;
     document.getElementById('smodalEpTotal').value = smodalData.epTotal || 0;
     document.getElementById('smodalDate').value = new Date().toISOString().split('T')[0];
@@ -3026,6 +3144,7 @@
 
   function closeSmodal() {
     document.getElementById('smodalOverlay').classList.remove('open');
+    document.getElementById('smodalDuplicateWarning').style.display = 'none';
   }
 
   function renderSmodalStars() {
@@ -3047,6 +3166,39 @@
     document.getElementById('smodalRequiredHint').style.display = 'none';
   }
 
+  function validateSmodalEpWatched(input) {
+    const total = parseInt(document.getElementById('smodalEpTotal').value) || 0;
+    let val = parseInt(input.value);
+    const warningEl = document.getElementById('smodalEpWarning');
+
+    if (isNaN(val) || val < 0) val = 0;
+
+    if (total > 0 && val > total) {
+      input.value = total;
+      val = total;
+      warningEl.textContent = 'Digite um valor menor ou igual ao número total de episódios.';
+      warningEl.className = 'ep-warning error';
+      clearTimeout(input._warnTimer);
+      input._warnTimer = setTimeout(() => {
+        warningEl.textContent = '';
+        warningEl.className = 'ep-warning';
+      }, 3000);
+    } else if (total > 0 && val === total) {
+      warningEl.textContent = 'Este é o último episódio.';
+      warningEl.className = 'ep-warning info';
+      clearTimeout(input._warnTimer);
+      input._warnTimer = setTimeout(() => {
+        warningEl.textContent = '';
+        warningEl.className = 'ep-warning';
+      }, 3000);
+    } else {
+      warningEl.textContent = '';
+      warningEl.className = 'ep-warning';
+    }
+
+    updateSmodalProgress();
+  }
+
   function updateSmodalProgress() {
     const watched = parseInt(document.getElementById('smodalEpWatched').value) || 0;
     const total   = parseInt(document.getElementById('smodalEpTotal').value) || 0;
@@ -3055,13 +3207,32 @@
   }
 
   function saveSmodalAnime() {
+    const dupWarning = document.getElementById('smodalDuplicateWarning');
+    dupWarning.style.display = 'none';
+
     if (!smodalStatus) {
       document.getElementById('smodalRequiredHint').style.display = 'block';
       return;
     }
+
+    // Duplicate check — by malId first, then by title
+    const listLabels = { watching: 'Assistindo', watched: 'Assistidos', plan: 'Para assistir' };
+    const existing = mockAnimes.find(a =>
+      (smodalData.malId && a.malId === smodalData.malId) ||
+      a.name.trim().toLowerCase() === smodalData.title.trim().toLowerCase()
+    );
+
+    if (existing) {
+      const listName = listLabels[existing.status] || existing.status;
+      dupWarning.innerHTML = `⚠ <strong>${existing.name}</strong> já está na lista <strong>${listName}</strong>.<br>Para alterar, acesse os detalhes do anime por lá.`;
+      dupWarning.style.display = 'block';
+      return;
+    }
+
     const newId = Date.now();
     mockAnimes.push({
       id: newId,
+      malId: smodalData.malId || null,
       name: smodalData.title,
       status: smodalStatus,
       epWatched: parseInt(document.getElementById('smodalEpWatched').value) || 0,
@@ -3611,6 +3782,136 @@
 
     // Adjust canvas height based on number of entries
     canvas.parentElement.style.minHeight = (entries.length * 44 + 20) + 'px';
+  }
+
+  // ─── TUTORIAL ───
+  const tutorialSteps = [
+    {
+      target: '.detail-list-selector',
+      text: 'Aqui você escolhe em qual lista o anime está: Assistindo, Assistidos ou Para Assistir.',
+      pos: 'below'
+    },
+    {
+      target: '#detailStars',
+      text: 'Clique nas estrelas para avaliar o anime de 1 a 5.',
+      pos: 'below'
+    },
+    {
+      target: '.detail-progress-section',
+      text: 'Acompanhe seu progresso. Edite os episódios assistidos e o total diretamente aqui.',
+      pos: 'above'
+    },
+    {
+      target: '.detail-seasons-header',
+      text: 'Associe temporadas ao anime. O contador ao lado mostra o total de temporadas.',
+      pos: 'above'
+    },
+    {
+      target: '.detail-actions-group',
+      text: 'Esses botões permitem compartilhar, apagar o anime ou favoritá-lo.',
+      pos: 'below'
+    },
+    {
+      target: null,
+      text: 'Fim do tutorial! Você sempre pode ver novamente clicando no botão ?.', 
+      pos: 'center'
+    }
+  ];
+
+  let tutorialStep = 0;
+
+  function startTutorial() {
+    tutorialStep = 0;
+    document.getElementById('tutorialOverlay').style.display = 'block';
+    showTutorialStep();
+  }
+
+  function tutorialNext() {
+    tutorialStep++;
+    if (tutorialStep >= tutorialSteps.length) {
+      document.getElementById('tutorialOverlay').style.display = 'none';
+      return;
+    }
+    showTutorialStep();
+  }
+
+  function showTutorialStep() {
+    const step     = tutorialSteps[tutorialStep];
+    const balloon  = document.getElementById('tutorialBalloon');
+    const textEl   = document.getElementById('tutorialText');
+    const hintEl   = balloon.querySelector('.tutorial-hint');
+    const arrowEl  = document.getElementById('tutorialArrow');
+    const isMobile = window.innerWidth <= 640;
+    const margin   = 10;
+    // balloon max width: narrower on mobile
+    balloon.style.maxWidth = isMobile ? '180px' : '230px';
+
+    textEl.textContent = step.text;
+    const isLast = tutorialStep === tutorialSteps.length - 1;
+    hintEl.style.display = isLast ? 'none' : 'block';
+
+    // Re-trigger animation
+    balloon.style.animation = 'none';
+    balloon.offsetHeight;
+    balloon.style.animation = '';
+
+    // Center for last step
+    if (step.pos === 'center' || !step.target) {
+      balloon.style.top       = '50%';
+      balloon.style.left      = '50%';
+      balloon.style.transform = 'translate(-50%, -50%)';
+      arrowEl.style.display   = 'none';
+      return;
+    }
+
+    const el = document.querySelector(step.target);
+    if (!el) { tutorialNext(); return; }
+
+    // Place off-screen first to measure real size
+    balloon.style.top       = '-9999px';
+    balloon.style.left      = '-9999px';
+    balloon.style.transform = '';
+
+    // Use rAF so browser has painted and we can measure
+    requestAnimationFrame(() => {
+      const rect  = el.getBoundingClientRect();
+      const bw    = balloon.offsetWidth  || 200;
+      const bh    = balloon.offsetHeight || 80;
+      const vw    = window.innerWidth;
+      const vh    = window.innerHeight;
+
+      arrowEl.style.display = 'block';
+
+      // Decide direction: prefer requested, but flip if no room
+      let dir = step.pos; // 'above' | 'below'
+      if (dir === 'below' && rect.bottom + bh + 20 > vh) dir = 'above';
+      if (dir === 'above' && rect.top   - bh - 20 < 0)  dir = 'below';
+
+      // Horizontal: align with element center, clamped to viewport
+      let left = rect.left + rect.width / 2 - bw / 2;
+      left = Math.max(margin, Math.min(left, vw - bw - margin));
+
+      let top;
+      if (dir === 'below') {
+        top = rect.bottom + 12;
+        arrowEl.style.top    = '-5px';
+        arrowEl.style.bottom = 'auto';
+      } else {
+        top = rect.top - bh - 12;
+        arrowEl.style.bottom = '-5px';
+        arrowEl.style.top    = 'auto';
+      }
+
+      // Clamp top
+      top = Math.max(margin, Math.min(top, vh - bh - margin));
+
+      // Arrow horizontal offset relative to balloon
+      const arrowLeft = Math.max(8, Math.min(rect.left + rect.width / 2 - left - 5, bw - 18));
+      arrowEl.style.left = arrowLeft + 'px';
+
+      balloon.style.top  = top  + 'px';
+      balloon.style.left = left + 'px';
+    });
   }
 
   // ─── ACESSIBILIDADE — FONT SIZE ───
