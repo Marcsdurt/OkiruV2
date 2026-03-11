@@ -1831,7 +1831,7 @@
       /* Textos menores no card mobile */
       .sc-title { font-size: 13px; }
       .sc-stars { font-size: 15px; gap: 2px; }
-      .sc-logo { height: 18px; }
+      .sc-logo { height: 34px; }
 
       /* Botão de download fora do card, fixo no fundo */
       .share-download-btn {
