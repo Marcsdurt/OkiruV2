@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+<h2>Teste html2canvas</h2>
+<pre id="log"></pre>
+
+<div id="card" style="width:270px;background:#0A0A0A;border-radius:16px;padding:20px;color:white;font-family:sans-serif;">
+  <p style="color:white">Nome: Sousou no Frieren</p>
+  <img id="cover" src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154587-gkOHOtQCGmOG.jpg" 
+       style="width:100%;height:200px;object-fit:cover;display:block;border-radius:8px" />
+  <p style="color:#FACC15">★★★★★</p>
+</div>
+
+<br>
+<button onclick="testar()">Testar html2canvas</button>
+<br><br>
+<canvas id="resultado" style="border:2px solid green;max-width:270px"></canvas>
+
+<script>
+const log = t => { document.getElementById('log').textContent += t + '\n'; console.log(t); };
+
+// Testa se a img tag carrega
+document.getElementById('cover').onload = () => log('✅ <img> carregou visualmente');
+document.getElementById('cover').onerror = () => log('❌ <img> falhou');
+
+function testar() {
+  log('Rodando html2canvas...');
+  html2canvas(document.getElementById('card'), {
+    allowTaint: true,
+    useCORS: false,
+    logging: true,
+    backgroundColor: '#0A0A0A',
+  }).then(canvas => {
+    log('✅ html2canvas retornou canvas ' + canvas.width + 'x' + canvas.height);
+    try {
+      const data = canvas.toDataURL();
+      log('✅ toDataURL() OK — ' + data.length + ' chars');
+      document.getElementById('resultado').replaceWith(canvas);
+    } catch(e) {
+      log('❌ toDataURL() falhou: ' + e.message);
+    }
+  }).catch(e => log('❌ html2canvas erro: ' + e));
+}
+</script>
+</body>
+</html>
