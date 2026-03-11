@@ -58,7 +58,7 @@ function renderList(key, items) {
       ? `<span class="anime-seasons-badge">${seasonCount} temp.</span>`
       : '';
     return `
-      <div class="anime-item" onclick="openDetail(${a.id})">
+      <div class="anime-item" data-name="${a.name.toLowerCase()}" onclick="openDetail(${a.id})">
         <div class="anime-thumb">
           ${a.img ? `<img src="${a.img}" />` : ''}
         </div>
@@ -69,4 +69,36 @@ function renderList(key, items) {
         <span class="anime-ep">${epLabel(a)}</span>
       </div>`;
   }).join('');
+
+  // Re-aplica filtro ativo se houver
+  const input = document.getElementById('search-input-' + key);
+  if (input && input.value) filterList(key, input.value);
+}
+
+function toggleListSearch(key) {
+  const bar = document.getElementById('search-bar-' + key);
+  const btn = bar?.previousElementSibling?.querySelector('.list-search-btn');
+  const input = document.getElementById('search-input-' + key);
+  const isOpen = bar.classList.contains('open');
+
+  if (isOpen) {
+    bar.classList.remove('open');
+    btn?.classList.remove('active');
+    input.value = '';
+    filterList(key, ''); // restaura lista completa
+  } else {
+    bar.classList.add('open');
+    btn?.classList.add('active');
+    input.focus();
+  }
+}
+
+function filterList(key, query) {
+  const el = document.getElementById('list-' + key);
+  if (!el) return;
+  const q = query.trim().toLowerCase();
+  el.querySelectorAll('.anime-item').forEach(item => {
+    const name = item.dataset.name || '';
+    item.style.display = (!q || name.includes(q)) ? '' : 'none';
+  });
 }

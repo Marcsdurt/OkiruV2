@@ -80,7 +80,17 @@
         <div class="list-col">
           <div class="list-col-header">
             <span class="list-col-title">Assistindo</span>
-            <span class="list-count" id="count-watching">0</span>
+            <div class="list-header-right">
+              <button class="list-search-btn" onclick="toggleListSearch('watching')" title="Buscar na lista">
+                <img src="./icons/search.svg" width="14" height="14" />
+              </button>
+              <span class="list-count" id="count-watching">0</span>
+            </div>
+          </div>
+          <div class="list-search-bar" id="search-bar-watching">
+            <input class="list-search-input" id="search-input-watching" type="text"
+              placeholder="Buscar em Assistindo..."
+              oninput="filterList('watching', this.value)" />
           </div>
           <div class="list-items" id="list-watching">
             <div class="empty-state">
@@ -94,7 +104,17 @@
         <div class="list-col">
           <div class="list-col-header">
             <span class="list-col-title">Assistidos</span>
-            <span class="list-count" id="count-watched">0</span>
+            <div class="list-header-right">
+              <button class="list-search-btn" onclick="toggleListSearch('watched')" title="Buscar na lista">
+                <img src="./icons/search.svg" width="14" height="14" />
+              </button>
+              <span class="list-count" id="count-watched">0</span>
+            </div>
+          </div>
+          <div class="list-search-bar" id="search-bar-watched">
+            <input class="list-search-input" id="search-input-watched" type="text"
+              placeholder="Buscar em Assistidos..."
+              oninput="filterList('watched', this.value)" />
           </div>
           <div class="list-items" id="list-watched">
             <div class="empty-state">
@@ -108,7 +128,17 @@
         <div class="list-col">
           <div class="list-col-header">
             <span class="list-col-title">Para assistir</span>
-            <span class="list-count" id="count-plan">0</span>
+            <div class="list-header-right">
+              <button class="list-search-btn" onclick="toggleListSearch('plan')" title="Buscar na lista">
+                <img src="./icons/search.svg" width="14" height="14" />
+              </button>
+              <span class="list-count" id="count-plan">0</span>
+            </div>
+          </div>
+          <div class="list-search-bar" id="search-bar-plan">
+            <input class="list-search-input" id="search-input-plan" type="text"
+              placeholder="Buscar em Para assistir..."
+              oninput="filterList('plan', this.value)" />
           </div>
           <div class="list-items" id="list-plan">
             <div class="empty-state">

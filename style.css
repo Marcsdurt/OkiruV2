@@ -195,6 +195,53 @@
       justify-content: space-between;
     }
 
+    .list-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .list-search-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 3px 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.4;
+      transition: opacity 0.15s, background 0.15s;
+    }
+
+    .list-search-btn:hover { opacity: 0.9; background: var(--hover); }
+    .list-search-btn.active { opacity: 1; }
+    .list-search-btn img { filter: var(--icon-filter, none); display: block; }
+
+    .list-search-bar {
+      display: none;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--hover);
+    }
+
+    .list-search-bar.open { display: block; }
+
+    .list-search-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 0.8214rem;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .list-search-input:focus { border-color: var(--text); }
+
     .list-col-title {
       font-family: 'Syne', sans-serif;
       font-weight: 600;
@@ -1831,7 +1878,7 @@
       /* Textos menores no card mobile */
       .sc-title { font-size: 13px; }
       .sc-stars { font-size: 15px; gap: 2px; }
-      .sc-logo { height: 34px; }
+      .sc-logo { height: 18px; }
 
       /* Botão de download fora do card, fixo no fundo */
       .share-download-btn {
