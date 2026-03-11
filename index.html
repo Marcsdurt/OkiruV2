@@ -62,28 +62,20 @@
     }
 
     .sidebar-logo {
-      padding: 24px 20px 20px;
+      padding: 6px 12px;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 10px;
+      overflow: hidden;
+      height: 60px;
     }
 
-    .logo-icon {
-      font-size: 1.5714rem;
-      line-height: 1;
-    }
-
-    .logo-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.2857rem;
-      letter-spacing: -0.5px;
-      color: var(--text);
-    }
-
-    .logo-name span {
-      color: var(--accent);
+    #sidebarLogomarca {
+      display: block;
+      height: 65px;
+      width: auto;
+      margin-left: 21px;
+      flex-shrink: 0;
     }
 
     .sidebar-nav {
@@ -2217,8 +2209,7 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <span class="logo-icon"><img src="./favicons/icon-logo.png" width="24" height="24" style="display:block;" /></span>
-      <span class="logo-name">Okiru <span>V2</span></span>
+      <img id="sidebarLogomarca" src="./favicons/okiruv2-logomarca-white.png" alt="Okiru V2" />
     </div>
 
     <nav class="sidebar-nav">
@@ -3953,6 +3944,10 @@
       document.documentElement.style.setProperty('--border', '#E5E5E5');
       document.documentElement.style.setProperty('--hover', '#F5F5F5');
     }
+    const logo = document.getElementById('sidebarLogomarca');
+    if (logo) logo.src = mode === 'dark'
+      ? './favicons/okiruv2-logomarca-black.png'
+      : './favicons/okiruv2-logomarca-white.png';
   }
 
   // ─── CONFIG SUB-PAGES ───
