@@ -13,7 +13,7 @@ function renderStatsMonth() {
   if (titleEl) titleEl.textContent = `Animes do mês - ${monthLabel}`;
 
   const thisMonth = mockAnimes.filter(a =>
-    a.status === 'watched' && a.dateAdded && a.dateAdded.startsWith(currentMonth)
+    a.dateAdded && a.dateAdded.startsWith(currentMonth)
   );
 
   if (!thisMonth.length) {

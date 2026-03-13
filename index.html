@@ -27,7 +27,6 @@
 
   <!-- Bibliotecas externas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -444,14 +443,8 @@
           </div>
         </div>
         <div class="detail-actions-group">
-          <div class="detail-share" title="Compartilhar" onclick="toggleShareDropdown(event)" id="shareBtn">
+          <div class="detail-share" title="Compartilhar" onclick="openSharePage()" id="shareBtn">
             <img src="./icons/share.svg" />
-          </div>
-          <div class="share-dropdown" id="shareDropdown">
-            <div class="share-dropdown-item" onclick="openSharePage()">
-              <img src="./icons/share.svg" width="13" height="13" style="opacity:.6" />
-              Card Imagem
-            </div>
           </div>
           <div class="detail-share" title="Apagar anime" onclick="showDeletePopup()">
             <img src="./icons/trash.svg" />
@@ -521,31 +514,36 @@
 
   <!-- SHARE PAGE -->
   <div id="page-share" class="page">
-    <div class="detail-back" onclick="closeSharePage()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <div class="share-back" onclick="closeSharePage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
       Voltar
     </div>
-    <div class="page-header">
-      <h1 class="page-title">Compartilhamento</h1>
-    </div>
 
-    <div class="share-preview-wrap">
+    <div class="share-hint">Tire um print desta tela para compartilhar</div>
+
+    <div class="share-card-wrap">
       <div id="shareCard">
+        <!-- Perfil centralizado -->
         <div class="sc-profile">
           <div class="sc-avatar" id="scAvatar"></div>
           <span class="sc-name" id="scName"></span>
         </div>
+        <!-- Capa -->
         <div class="sc-cover" id="scCover"></div>
-        <div class="sc-title" id="scTitle"></div>
-        <div class="sc-stars" id="scStars"></div>
-        <div class="sc-divider"></div>
-        <img class="sc-logo" id="scLogo" src="./favicons/okiruv2-logomarca-black.png" />
+        <!-- Info: studio acima do título -->
+        <div class="sc-info">
+          <div class="sc-studio" id="scStudio"></div>
+          <div class="sc-title" id="scTitle"></div>
+          <div class="sc-stars" id="scStars"></div>
+        </div>
+        <!-- Logo apenas, sem texto, sem divisor -->
+        <div class="sc-footer">
+          <img class="sc-logo" src="./favicons/logomarca_4_blackBG.png" />
+        </div>
       </div>
     </div>
-
-    <button class="share-download-btn" id="shareDownloadBtn" onclick="downloadShareCard()">Download da imagem</button>
   </div>
 
   <!-- TUTORIAL OVERLAY -->

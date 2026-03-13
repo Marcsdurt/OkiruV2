@@ -1672,234 +1672,189 @@
     /* ─── SHARE DROPDOWN ─── */
     .detail-actions-group { position: relative; }
 
-    .share-dropdown {
-      display: none;
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 0;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-      z-index: 50;
-      min-width: 150px;
-      overflow: hidden;
-    }
 
-    .share-dropdown.open { display: block; }
 
-    .share-dropdown-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      font-size: 0.8214rem;
-      cursor: pointer;
-      white-space: nowrap;
-      color: var(--text);
-    }
-
-    .share-dropdown-item:hover { background: var(--hover); }
 
     /* ─── SHARE PAGE ─── */
     #page-share {
       display: none;
-      padding: 36px 40px;
-      animation: fadeIn 0.2s ease;
-    }
-
-    #page-share.active { display: block; }
-
-    .share-preview-wrap {
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: flex-start;
-    }
-
-    /* ── Share Card (HTML layout, captured by html2canvas) ── */
-    #shareCard {
-      width: 270px;
-      background: #0A0A0A;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-      padding: 18px 18px 20px;
-      display: flex;
       flex-direction: column;
-      gap: 14px;
-      font-family: 'DM Sans', sans-serif;
+      align-items: center;
+      background: #0a0a0a;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 32px;
     }
 
-    .sc-profile {
+    #page-share.active { display: flex; }
+
+    .share-back {
+      width: 100%;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
+      padding: 14px 20px 8px;
+      color: #555;
+      font-size: 0.85rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      user-select: none;
     }
+    .share-back svg { width: 18px; height: 18px; stroke: #555; flex-shrink: 0; }
 
-    .sc-avatar {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: #2a2a2a;
-      overflow: hidden;
+    .share-hint {
+      color: #333;
+      font-size: 0.68rem;
+      text-align: center;
+      padding: 0 20px 16px;
       flex-shrink: 0;
     }
 
+    .share-card-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0 20px;
+    }
+
+    /* ── Card: proporção 9:16, posicionamento absoluto fiel à referência ── */
+    #shareCard {
+      /* largura do card */
+      --cw: min(88vw, 380px);
+      width: var(--cw);
+      /* altura 9:16 */
+      height: calc(var(--cw) * 16 / 9);
+      position: relative;
+      background: radial-gradient(circle at 85% 15%, #1a1a1a 0%, #000 60%);
+      border-radius: calc(var(--cw) * 0.03);
+      overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    /* Perfil */
+    .sc-profile {
+      position: absolute;
+      top: calc(var(--cw) * 16/9 * 0.1031);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .sc-avatar {
+      width: calc(var(--cw) * 0.076);
+      height: calc(var(--cw) * 0.076);
+      border-radius: 50%;
+      background: #555;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
     .sc-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
     .sc-name {
-      color: #F5F5F5;
-      font-size: 13px;
+      margin-left: calc(var(--cw) * 0.029);
+      font-size: calc(var(--cw) * 0.039);
       font-weight: 600;
+      color: #fff;
     }
 
+    /* Capa */
     .sc-cover {
-      width: 100%;
-      height: 320px;
-      border-radius: 10px;
+      position: absolute;
+      top: calc(var(--cw) * 16/9 * 0.1807);
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(var(--cw) * 0.506);
+      height: calc(var(--cw) * 16/9 * 0.3932);
+      border-radius: calc(var(--cw) * 0.033);
       overflow: hidden;
-      background: #1a1a1a;
+      background: #333;
+      border: 1px solid rgba(255,255,255,0.15);
     }
+    .sc-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    .sc-cover img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
+    /* Título */
     .sc-title {
-      color: #F5F5F5;
-      font-size: 15px;
+      position: absolute;
+      top: calc(var(--cw) * 16/9 * 0.6193);
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(var(--cw) * 0.774);
+      font-size: calc(var(--cw) * 0.065);
       font-weight: 700;
-      line-height: 1.3;
-      font-family: 'Syne', sans-serif;
+      text-align: center;
+      line-height: 1.15;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
+    /* Studio */
+    .sc-studio {
+      position: absolute;
+      top: calc(var(--cw) * 16/9 * 0.6714);
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: calc(var(--cw) * 0.03);
+      color: #aaa;
+      white-space: nowrap;
+    }
+    .sc-studio strong { color: #fff; font-weight: 600; }
+
+    /* Estrelas */
     .sc-stars {
+      position: absolute;
+      top: calc(var(--cw) * 16/9 * 0.7271);
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(var(--cw) * 0.396);
       display: flex;
-      gap: 3px;
-      font-size: 18px;
+      justify-content: space-between;
+      font-size: calc(var(--cw) * 0.072);
     }
 
-    .sc-divider {
-      height: 1px;
-      background: #222;
-      margin: 2px 0;
+    /* Logo */
+    .sc-footer {
+      position: absolute;
+      bottom: calc(var(--cw) * 16/9 * 0.0542);
+      left: 50%;
+      transform: translateX(-50%);
     }
-
     .sc-logo {
-      height: 28px;
+      height: calc(var(--cw) * 0.043);
       width: auto;
       display: block;
-      margin: 0 auto;
+      opacity: 0.45;
+    }
+    .sc-brand { display: none; }
+
+    /* Info wrapper não usado com posicionamento absoluto */
+    .sc-info { display: contents; }
+
+    .bottom-nav.hidden-for-share { display: none !important; }
+      font-size: 20px;
+      margin-top: 4px;
     }
 
-    .share-download-btn {
-      display: inline-flex;
+    /* Footer: só a logo, sem texto, sem divisor */
+    .sc-footer {
+      display: flex;
       align-items: center;
-      gap: 8px;
-      background: #0A0A0A;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 12px 24px;
-      font-size: 0.9286rem;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.15s;
+      justify-content: center;
+      padding-top: 10px;
+      flex-shrink: 0;
     }
 
-    .share-download-btn:hover { opacity: 0.8; }
+    .sc-logo { height: 20px; width: auto; display: block; opacity: 0.5; }
 
-    @media (max-width: 640px) {
-      /* Página toda escura, tela inteira sem bottom nav */
-      #page-share {
-        padding: 0;
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        background: #111;
-        height: 100dvh;
-        overflow: hidden;
-      }
-      #page-share.active { display: flex; }
+    .sc-brand { display: none; }
 
-      /* Botão voltar adaptado pro fundo escuro */
-      #page-share .detail-back {
-        width: 100%;
-        padding: 14px 20px 8px;
-        flex-shrink: 0;
-        color: #aaa;
-      }
-      #page-share .detail-back img { filter: invert(1) brightness(0.6); }
-      #page-share .detail-back span { color: #aaa; }
-
-      /* Título padrão some */
-      #page-share .page-header { display: none; }
-
-      /* Área centralizada do card */
-      .share-preview-wrap {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        margin-bottom: 0;
-        overflow: hidden;
-        min-height: 0;
-      }
-
-      /* Card com tamanho fixo ideal para screenshot */
-      #shareCard {
-        width: 264px;
-        height: 469px;
-        min-height: 469px;
-        max-height: 469px;
-        gap: 10px;
-        padding: 14px 14px 16px;
-        display: flex;
-        flex-direction: column;
-        flex-shrink: 0;
-      }
-
-      /* Avatar menor */
-      #shareCard .sc-avatar { width: 28px; height: 28px; }
-      #shareCard .sc-name { font-size: 12px; }
-
-      /* Capa: ocupa o espaço que sobra dentro do card fixo */
-      .sc-cover {
-        flex: 1;
-        height: auto;
-        min-height: 0;
-      }
-
-      /* Textos menores no card mobile */
-      .sc-title { font-size: 13px; }
-      .sc-stars { font-size: 15px; gap: 2px; }
-      .sc-logo { height: 18px; }
-
-      /* Botão de download fora do card, fixo no fundo */
-      .share-download-btn {
-        width: calc(100% - 56px);
-        justify-content: center;
-        margin: 12px 28px 28px;
-        padding: 13px 24px;
-        font-size: 0.95rem;
-        border-radius: 10px;
-        flex-shrink: 0;
-      }
-
-      /* Bottom nav some na tela de share (controlado via JS) */
-      .bottom-nav.hidden-for-share { display: none !important; }
-
-      .share-page-header-mobile { display: none !important; }
-    }
-
-    @media (min-width: 641px) {
-      .share-page-header-mobile { display: none; }
-    }
+    .bottom-nav.hidden-for-share { display: none !important; }
     #tutorialOverlay {
       position: fixed;
       inset: 0;

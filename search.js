@@ -69,7 +69,7 @@ async function malSearch() {
         anilistId: a.id,
         title,
         img,
-        studio:   a.studios?.nodes?.[0]?.name || '—',
+        studio:   a.studios?.nodes?.[0]?.name || '',
         genres:   (a.genres || []).map(translateAL),
         epTotal:  a.episodes || 0,
       }));
@@ -218,6 +218,7 @@ function saveSmodalAnime() {
     id: Date.now(),
     anilistId: smodalData.anilistId || null,
     name: smodalData.title,
+    studio: smodalData.studio || '',
     status: smodalStatus,
     epWatched: parseInt(document.getElementById('smodalEpWatched').value) || 0,
     epTotal:   parseInt(document.getElementById('smodalEpTotal').value) || 0,
