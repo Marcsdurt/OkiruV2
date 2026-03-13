@@ -47,6 +47,7 @@ function openDetail(id, fromSeason = false) {
   updateStatusSelector(anime.status);
   updateFavoriteIcon(anime.favorite || false);
   renderSeasonsList();
+  loadAiringSection(anime);
 
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-detail').classList.add('active');

@@ -27,6 +27,7 @@
 
   <!-- Bibliotecas externas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -468,77 +469,136 @@
         </div>
       </div>
 
-      <div class="detail-progress-section">
-        <div class="progress-label">
-          <span class="progress-title">Progresso</span>
-          <div class="progress-inputs">
-            <input class="progress-num" id="detailEpWatched" type="number" min="0" value="0"
-              oninput="validateEpWatched(this)"
-              onchange="validateEpWatched(this)" />
-            <span class="progress-sep">/</span>
-            <input class="progress-num" id="detailEpTotal" type="number" min="0" value="0" oninput="updateProgress()" />
-            <span class="progress-sep" style="margin-left:2px;">eps</span>
+      <div class="detail-two-col">
+
+        <!-- COLUNA ESQUERDA: Progresso + campos -->
+        <div class="detail-col-left">
+          <div class="detail-progress-section">
+            <div class="progress-label">
+              <span class="progress-title">Progresso</span>
+              <span class="airing-next-tag" id="airingNextTag" style="display:none;"></span>
+              <span class="airing-next-tag" id="airingNextTag" style="display:none;"></span>
+              <div class="progress-inputs">
+                <input class="progress-num" id="detailEpWatched" type="number" min="0" value="0"
+                  oninput="validateEpWatched(this)"
+                  onchange="validateEpWatched(this)" />
+                <span class="progress-sep">/</span>
+                <input class="progress-num" id="detailEpTotal" type="number" min="0" value="0" oninput="updateProgress()" />
+                <span class="progress-sep" style="margin-left:2px;">eps</span>
+              </div>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="detailProgressFill" style="width:0%"></div>
+            </div>
+            <div class="ep-warning" id="epWarning"></div>
+          </div>
+
+          <div class="detail-fields-row">
+            <div class="detail-field-group">
+              <label class="detail-field-label">Data de adição</label>
+              <input class="detail-field-input" type="date" id="detailDateAdded" />
+            </div>
+          </div>
+
+          <div class="detail-seasons-section">
+            <div class="detail-seasons-header">
+              <span class="detail-field-label">Temporadas</span>
+              <input class="seasons-count-input" id="seasonsCountInput" type="number" min="0" value="0"
+                title="Total de temporadas" onchange="saveSeasonCount(this.value)" />
+            </div>
+            <div style="position:relative;">
+              <div class="seasons-search-wrap">
+                <input class="search-input seasons-input" type="text" id="seasonsInput" placeholder="Buscar anime nas suas listas..." autocomplete="off" oninput="searchSeasons()" />
+                <button class="seasons-search-btn">
+                  <img src="./icons/search.svg" width="15" height="15" />
+                </button>
+              </div>
+              <div class="seasons-dropdown" id="seasonsDropdown"></div>
+            </div>
+            <div id="seasonsList"></div>
           </div>
         </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" id="detailProgressFill" style="width:0%"></div>
-        </div>
-        <div class="ep-warning" id="epWarning"></div>
-      </div>
 
-      <div class="detail-fields-row">
-        <div class="detail-field-group">
-          <label class="detail-field-label">Data de adição</label>
-          <input class="detail-field-input" type="date" id="detailDateAdded" />
-        </div>
-      </div>
+        <!-- COLUNA DIREITA: Em lançamento -->
+        <div class="detail-col-right">
+          <div class="airing-section">
+            <div class="airing-toggle-row">
+              <div class="airing-toggle-left">
+                <span class="airing-toggle-label">Em lançamento</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="airingToggle" onchange="onAiringToggle()" />
+                <span class="toggle-track"></span>
+              </label>
+            </div>
 
-      <div class="detail-seasons-section">
-        <div class="detail-seasons-header">
-          <span class="detail-field-label">Temporadas</span>
-          <input class="seasons-count-input" id="seasonsCountInput" type="number" min="0" value="0"
-            title="Total de temporadas" onchange="saveSeasonCount(this.value)" />
-        </div>
-        <div style="position:relative;">
-          <div class="seasons-search-wrap">
-            <input class="search-input seasons-input" type="text" id="seasonsInput" placeholder="Buscar anime nas suas listas..." autocomplete="off" oninput="searchSeasons()" />
-            <button class="seasons-search-btn">
-              <img src="./icons/search.svg" width="15" height="15" />
-            </button>
+            <div class="airing-body" id="airingBody" style="display:none;">
+              <div class="airing-fields">
+                <div class="airing-field-group">
+                  <label class="detail-field-label">Data do 1º episódio</label>
+                  <input class="detail-field-input" type="date" id="airingFirstDate" oninput="onAiringFieldChange()" />
+                </div>
+                <div class="airing-field-group">
+                  <label class="detail-field-label">Dia de lançamento</label>
+                  <select class="detail-field-input" id="airingWeekday" onchange="onAiringFieldChange()">
+                    <option value="">— selecionar —</option>
+                    <option value="0">Domingo</option>
+                    <option value="1">Segunda</option>
+                    <option value="2">Terça</option>
+                    <option value="3">Quarta</option>
+                    <option value="4">Quinta</option>
+                    <option value="5">Sexta</option>
+                    <option value="6">Sábado</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="airing-calendar">
+                <div class="cal-header">
+                  <button type="button" class="cal-nav" onclick="calPrevMonth()">&#8249;</button>
+                  <div class="cal-month-year">
+                    <select class="cal-month-sel" id="calMonthSel" onchange="calGoToMonth()"></select>
+                    <select class="cal-year-sel" id="calYearSel" onchange="calGoToMonth()"></select>
+                  </div>
+                  <button type="button" class="cal-nav" onclick="calNextMonth()">&#8250;</button>
+                </div>
+                <div class="cal-weekdays">
+                  <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+                </div>
+                <div class="cal-grid" id="calGrid"></div>
+              </div>
+
+              <button type="button" class="airing-reset-btn" onclick="resetAiringData()">Resetar dados</button>
+            </div>
           </div>
-          <div class="seasons-dropdown" id="seasonsDropdown"></div>
         </div>
-        <div id="seasonsList"></div>
+
       </div>
+
     </div>
 
   <!-- SHARE PAGE -->
   <div id="page-share" class="page">
     <div class="share-back" onclick="closeSharePage()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
       Voltar
     </div>
-
-    <div class="share-hint">Tire um print desta tela para compartilhar</div>
+    <p class="share-hint">Tire um print desta tela para compartilhar</p>
 
     <div class="share-card-wrap">
       <div id="shareCard">
-        <!-- Perfil centralizado -->
         <div class="sc-profile">
           <div class="sc-avatar" id="scAvatar"></div>
           <span class="sc-name" id="scName"></span>
         </div>
-        <!-- Capa -->
         <div class="sc-cover" id="scCover"></div>
-        <!-- Info: studio acima do título -->
         <div class="sc-info">
-          <div class="sc-studio" id="scStudio"></div>
           <div class="sc-title" id="scTitle"></div>
+          <div class="sc-studio" id="scStudio"></div>
           <div class="sc-stars" id="scStars"></div>
         </div>
-        <!-- Logo apenas, sem texto, sem divisor -->
         <div class="sc-footer">
           <img class="sc-logo" src="./favicons/logomarca_4_blackBG.png" />
         </div>
@@ -655,6 +715,8 @@
 <script src="profile.js"></script>
 <script src="stats.js"></script>
 <script src="share.js"></script>
+<script src="airing.js"></script>
+<script src="airing.js"></script>
 <script src="settings.js"></script>
 <script src="navigation.js"></script>
 <script src="init.js"></script>
