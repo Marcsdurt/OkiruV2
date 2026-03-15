@@ -721,7 +721,7 @@
     /* ─── AIRING ─── */
     /* ─── DETAIL MAIN CONTENT (coluna esquerda) ─── */
     .detail-main-content {
-      max-width: 560px;
+      max-width: 464px;
     }
 
     /* ─── SIDEBAR DIREITA ─── */
@@ -752,9 +752,8 @@
       width: 28px;
       height: 28px;
       background: var(--bg);
-      border: 1px solid var(--border);
+      border: none;
       border-radius: 6px 0 0 6px;
-      border-right: none;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -772,11 +771,12 @@
       color: var(--secondary);
       transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
       flex-shrink: 0;
+      transform: rotate(180deg);
     }
 
-    /* quando colapsada, seta vira para a esquerda (aponta para fora = expandir) */
+    /* quando colapsada, seta aponta para esquerda (<) */
     .detail-right-sidebar.collapsed .detail-sidebar-toggle svg {
-      transform: rotate(180deg);
+      transform: rotate(0deg);
     }
 
     /* Conteúdo da sidebar */
@@ -816,7 +816,6 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px 0;
-      border-top: 1px solid var(--border);
     }
 
     .airing-toggle-left {
@@ -829,6 +828,8 @@
       font-size: 0.8rem;
       font-weight: 600;
       color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
     .airing-next-tag {
@@ -886,11 +887,11 @@
 
     .airing-fields {
       display: flex;
-      gap: 12px;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .airing-field-group {
-      flex: 1;
       display: flex;
       flex-direction: column;
       gap: 4px;
