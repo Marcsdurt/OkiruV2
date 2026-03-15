@@ -13,74 +13,110 @@ async function malSearch() {
   setState('Buscando...');
   container.innerHTML = '';
 
-  try {
-    const query = `
-      query ($search: String) {
-        Page(perPage: 18) {
-          media(search: $search, type: ANIME, sort: SEARCH_MATCH) {
-            id
-            title { romaji english native }
-            coverImage { large extraLarge }
-            startDate { year }
-            episodes
-            studios(isMain: true) { nodes { name } }
-            genres
-            status
-          }
+  const genreMap = {
+    'Action':'Ação','Adventure':'Aventura','Comedy':'Comédia','Drama':'Drama',
+    'Ecchi':'Ecchi','Fantasy':'Fantasia','Horror':'Terror','Mahou Shoujo':'Mahou Shoujo',
+    'Mecha':'Mecha','Music':'Música','Mystery':'Mistério','Psychological':'Psicológico',
+    'Romance':'Romance','Sci-Fi':'Sci-Fi','Slice of Life':'Cotidiano','Sports':'Esportes',
+    'Supernatural':'Sobrenatural','Thriller':'Thriller','Hentai':'Hentai',
+    'Shounen':'Shounen','Shoujo':'Shoujo','Seinen':'Seinen','Josei':'Josei',
+  };
+  const translateAL = g => genreMap[g] || g;
+
+  const gqlQuery = `
+    query ($search: String, $type: MediaType) {
+      Page(perPage: 12) {
+        media(search: $search, type: $type, sort: SEARCH_MATCH) {
+          id
+          type
+          format
+          title { romaji english native }
+          coverImage { large }
+          startDate { year }
+          episodes
+          chapters
+          studios(isMain: true) { nodes { name } }
+          genres
         }
       }
-    `;
-    const res = await fetch('https://graphql.anilist.co', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ query, variables: { search: q } })
-    });
+    }
+  `;
 
-    if (!res.ok) {
-      setState(`❌ Erro ${res.status} ao buscar. Tente novamente.`);
+  try {
+    // Faz as duas buscas em paralelo
+    const [animeRes, mangaRes] = await Promise.all([
+      fetch('https://graphql.anilist.co', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ query: gqlQuery, variables: { search: q, type: 'ANIME' } })
+      }),
+      fetch('https://graphql.anilist.co', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ query: gqlQuery, variables: { search: q, type: 'MANGA' } })
+      })
+    ]);
+
+    if (!animeRes.ok || !mangaRes.ok) {
+      setState('❌ Erro ao buscar. Tente novamente.');
       return;
     }
 
-    const data = await res.json();
+    const [animeData, mangaData] = await Promise.all([animeRes.json(), mangaRes.json()]);
     setState('');
 
-    const results = data?.data?.Page?.media || [];
+    const animes = animeData?.data?.Page?.media || [];
+    const mangas = mangaData?.data?.Page?.media || [];
+
+    // Intercala resultados: anime, manga, anime, manga...
+    const results = [];
+    const max = Math.max(animes.length, mangas.length);
+    for (let i = 0; i < max; i++) {
+      if (animes[i]) results.push(animes[i]);
+      if (mangas[i]) results.push(mangas[i]);
+    }
+
     if (!results.length) {
       setState('Nenhum resultado encontrado.');
       return;
     }
 
-    const genreMap = {
-      'Action':'Ação','Adventure':'Aventura','Comedy':'Comédia','Drama':'Drama',
-      'Ecchi':'Ecchi','Fantasy':'Fantasia','Horror':'Terror','Mahou Shoujo':'Mahou Shoujo',
-      'Mecha':'Mecha','Music':'Música','Mystery':'Mistério','Psychological':'Psicológico',
-      'Romance':'Romance','Sci-Fi':'Sci-Fi','Slice of Life':'Cotidiano','Sports':'Esportes',
-      'Supernatural':'Sobrenatural','Thriller':'Thriller','Hentai':'Hentai',
-      'Shounen':'Shounen','Shoujo':'Shoujo','Seinen':'Seinen','Josei':'Josei',
-    };
-    const translateAL = g => genreMap[g] || g;
+    const MANGA_FORMATS = ['MANGA', 'ONE_SHOT', 'NOVEL'];
 
     container.innerHTML = results.map(a => {
-      const img   = a.coverImage?.large || '';
-      const title = a.title?.romaji || a.title?.english || '';
-      const year  = a.startDate?.year || '—';
-      const eps   = a.episodes ? `${a.episodes} eps` : '—';
+      const isManga = a.type === 'MANGA' || MANGA_FORMATS.includes(a.format);
+      const img     = a.coverImage?.large || '';
+      const title   = a.title?.romaji || a.title?.english || '';
+      const year    = a.startDate?.year || '—';
+      const count   = isManga
+        ? (a.chapters ? `${a.chapters} caps` : '—')
+        : (a.episodes ? `${a.episodes} eps` : '—');
+
       const dataAttr = encodeURIComponent(JSON.stringify({
         anilistId: a.id,
         title,
         img,
+        isManga,
         studio:   a.studios?.nodes?.[0]?.name || '',
         genres:   (a.genres || []).map(translateAL),
-        epTotal:  a.episodes || 0,
+        epTotal:  isManga ? (a.chapters || 0) : (a.episodes || 0),
       }));
+
+      const leituraTag = isManga
+        ? `<span class="result-leitura-tag">leitura</span>`
+        : '';
+
       return `
         <div class="result-card" onclick="openSmodal('${dataAttr}')">
           <div class="result-thumb">
             ${img ? `<img src="${img}" style="width:100%;height:100%;object-fit:cover;" />` : '🎌'}
           </div>
           <div class="result-info">
-            <div class="result-title" title="${title}">${title}</div>
-            <div class="result-year">${year} · ${eps}</div>
+            <div class="result-title-row">
+              <span class="result-title" title="${title}">${title}</span>
+              ${leituraTag}
+            </div>
+            <div class="result-year">${year} · ${count}</div>
           </div>
         </div>`;
     }).join('');
@@ -124,6 +160,28 @@ function openSmodal(dataAttr) {
   document.getElementById('smodalDate').value = new Date().toISOString().split('T')[0];
   document.getElementById('smodalProgressFill').style.width = '0%';
   renderSmodalStars();
+
+  // Adapta campos para leitura vs anime
+  const isManga = !!smodalData.isManga;
+  const listSel = document.getElementById('smodalListSelector');
+  const epsLabel = document.getElementById('smodalEpsLabel');
+  const seasonSection = document.getElementById('smodalSeasonSection');
+
+  if (isManga) {
+    listSel.innerHTML = `
+      <div class="smodal-list-opt" data-status="reading" onclick="setSmodalStatus('reading')">Lendo</div>
+      <div class="smodal-list-opt" data-status="read"    onclick="setSmodalStatus('read')">Lido</div>
+      <div class="smodal-list-opt" data-status="toread"  onclick="setSmodalStatus('toread')">Para ler</div>`;
+    if (epsLabel) epsLabel.textContent = 'caps';
+    if (seasonSection) seasonSection.style.display = 'none';
+  } else {
+    listSel.innerHTML = `
+      <div class="smodal-list-opt" data-status="watching" onclick="setSmodalStatus('watching')">Assistindo</div>
+      <div class="smodal-list-opt" data-status="watched"  onclick="setSmodalStatus('watched')">Assistidos</div>
+      <div class="smodal-list-opt" data-status="plan"     onclick="setSmodalStatus('plan')">Para assistir</div>`;
+    if (epsLabel) epsLabel.textContent = 'eps';
+    if (seasonSection) seasonSection.style.display = '';
+  }
 
   document.getElementById('smodalOverlay').classList.add('open');
 }
@@ -201,7 +259,10 @@ function saveSmodalAnime() {
     return;
   }
 
-  const listLabels = { watching: 'Assistindo', watched: 'Assistidos', plan: 'Para assistir' };
+  const listLabels = {
+    watching: 'Assistindo', watched: 'Assistidos', plan: 'Para assistir',
+    reading: 'Lendo', read: 'Lido', toread: 'Para ler'
+  };
   const existing = mockAnimes.find(a =>
     (smodalData.anilistId && a.anilistId === smodalData.anilistId) ||
     a.name.trim().toLowerCase() === smodalData.title.trim().toLowerCase()
@@ -232,6 +293,26 @@ function saveSmodalAnime() {
   saveAnimes();
   renderLists();
   closeSmodal();
+
+  // Navega para a página correta conforme o tipo
+  const isMangaStatus = ['reading', 'read', 'toread'].includes(smodalStatus);
+  if (isMangaStatus) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-leituras')?.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelector('[data-page="leituras"]')?.classList.add('active');
+    document.querySelectorAll('.bottom-nav-item').forEach(b => {
+      b.classList.toggle('active', b.dataset.page === 'leituras');
+    });
+  } else {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-inicio')?.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelector('[data-page="inicio"]')?.classList.add('active');
+    document.querySelectorAll('.bottom-nav-item').forEach(b => {
+      b.classList.toggle('active', b.dataset.page === 'inicio');
+    });
+  }
 
   // Salva a capa como base64 em background
   if (smodalData.img) {

@@ -20,6 +20,7 @@ navItems.forEach(item => {
     const target = item.dataset.page;
     pages.forEach(p => p.classList.remove('active'));
     document.getElementById('page-detail').classList.remove('active');
+    document.getElementById('detailRightSidebar').style.display = 'none';
     document.getElementById('page-' + target).classList.add('active');
     renderLists();
     if (target === 'perfil') renderProfileFavorites();
@@ -30,6 +31,7 @@ navItems.forEach(item => {
 function navigateTo(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-detail')?.classList.remove('active');
+  document.getElementById('detailRightSidebar').style.display = 'none';
   document.getElementById('page-' + page)?.classList.add('active');
   if (page === 'estatisticas') renderStatsMonth();
 }
@@ -37,12 +39,14 @@ function navigateTo(page) {
 function openConfigPage(key) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-detail').classList.remove('active');
+    document.getElementById('detailRightSidebar').style.display = 'none';
   document.getElementById('page-config-' + key).classList.add('active');
 }
 
 function closeConfigPage() {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-detail').classList.remove('active');
+    document.getElementById('detailRightSidebar').style.display = 'none';
   document.getElementById('page-config').classList.add('active');
   document.querySelectorAll('.bottom-nav-item').forEach(b => {
     b.classList.toggle('active', b.dataset.page === 'config');
@@ -52,6 +56,7 @@ function closeConfigPage() {
 function mobileNav(target, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-detail').classList.remove('active');
+    document.getElementById('detailRightSidebar').style.display = 'none';
   document.getElementById('page-' + target).classList.add('active');
   renderLists();
   if (target === 'perfil') renderProfileFavorites();

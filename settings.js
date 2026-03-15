@@ -92,6 +92,9 @@ function setTheme(mode) {
 }
 
 function applyTheme(mode) {
+  document.documentElement.classList.toggle('theme-dark', mode === 'dark');
+  const charImg = document.getElementById('configCharacterImg');
+  if (charImg) charImg.src = mode === 'dark' ? './imgs/woman-BW.png' : './imgs/man-BW.png';
   if (mode === 'dark') {
     document.documentElement.style.setProperty('--bg', '#0A0A0A');
     document.documentElement.style.setProperty('--text', '#F5F5F5');

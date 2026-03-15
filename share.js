@@ -4,11 +4,9 @@ function openSharePage() {
   const page = document.getElementById('page-share');
   const detail = document.getElementById('page-detail');
   if (!page || !detail) return;
-
   detail.classList.remove('active');
   page.classList.add('active');
   document.querySelector('.bottom-nav')?.classList.add('hidden-for-share');
-
   renderShareCard();
 }
 
@@ -16,7 +14,6 @@ function closeSharePage() {
   const page = document.getElementById('page-share');
   const detail = document.getElementById('page-detail');
   if (!page || !detail) return;
-
   page.classList.remove('active');
   detail.classList.add('active');
   document.querySelector('.bottom-nav')?.classList.remove('hidden-for-share');

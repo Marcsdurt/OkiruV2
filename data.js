@@ -24,6 +24,8 @@ const mockAnimes = loadAnimes();
 function epLabel(a) {
   if (a.status === 'watching') return `Ep ${a.epWatched}`;
   if (a.status === 'watched')  return `${a.epTotal} eps`;
+  if (a.status === 'reading')  return `Cap ${a.epWatched}`;
+  if (a.status === 'read')     return `${a.epTotal} caps`;
   return '—';
 }
 
@@ -39,9 +41,15 @@ function renderLists() {
   const watching = mockAnimes.filter(a => a.status === 'watching');
   const watched  = mockAnimes.filter(a => a.status === 'watched');
   const plan     = mockAnimes.filter(a => a.status === 'plan');
+  const reading  = mockAnimes.filter(a => a.status === 'reading');
+  const read     = mockAnimes.filter(a => a.status === 'read');
+  const toread   = mockAnimes.filter(a => a.status === 'toread');
   renderList('watching', watching);
   renderList('watched',  watched);
   renderList('plan',     plan);
+  renderList('reading',  reading);
+  renderList('read',     read);
+  renderList('toread',   toread);
   if (typeof renderMobileList === 'function') renderMobileList();
 }
 

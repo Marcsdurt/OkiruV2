@@ -40,7 +40,10 @@
 
     <nav class="sidebar-nav">
       <div class="nav-item active" data-page="inicio">
-        <span class="nav-icon"><img src="./icons/house.svg" width="16" height="16" /></span> Início
+        <span class="nav-icon"><img src="./icons/clapperboard-solid-full.svg" width="16" height="16" /></span> Séries & Filmes
+      </div>
+      <div class="nav-item" data-page="leituras">
+        <span class="nav-icon"><img src="./icons/book-solid-full.svg" width="16" height="16" /></span> Leituras
       </div>
       <div class="nav-item" data-page="busca">
         <span class="nav-icon"><img src="./icons/search.svg" width="16" height="16" /></span> Buscar
@@ -57,6 +60,13 @@
       <div class="nav-item" data-page="config">
         <span class="nav-icon"><img src="./icons/gear.svg" width="16" height="16" /></span> Configurações
       </div>
+
+      <!-- CHANGELOG BADGE -->
+      <div class="sidebar-changelog" id="sidebarChangelog" onclick="toggleChangelog(event)">
+        <span class="sidebar-changelog-dot"></span>
+        <span class="sidebar-changelog-label">v2.1 · novidades</span>
+      </div>
+
       <div class="sidebar-profile" id="sidebarProfile" style="display:none;" onclick="document.querySelector('[data-page=perfil]').click()">
         <div class="sidebar-profile-avatar" id="sidebarAvatar"></div>
         <span class="sidebar-profile-name" id="sidebarName"></span>
@@ -70,7 +80,7 @@
     <!-- INÍCIO -->
     <div class="page active" id="page-inicio">
       <div class="page-header">
-        <h1 class="page-title">Início</h1>
+        <h1 class="page-title">Séries & Filmes</h1>
         <p class="page-sub">Suas listas de anime</p>
       </div>
 
@@ -350,6 +360,78 @@
       </div>
     </div>
 
+    <!-- LEITURAS -->
+    <div class="page" id="page-leituras">
+      <div class="page-header">
+        <h1 class="page-title">Leituras</h1>
+        <p class="page-sub">Suas listas de mangá e livros</p>
+      </div>
+
+      <div class="lists-grid">
+
+        <div class="list-col">
+          <div class="list-col-header">
+            <span class="list-col-title">Lendo</span>
+            <div class="list-header-right">
+              <button class="list-search-btn" onclick="toggleListSearch('reading')" title="Buscar na lista">
+                <img src="./icons/search.svg" width="14" height="14" />
+              </button>
+              <span class="list-count" id="count-reading">0</span>
+            </div>
+          </div>
+          <div class="list-search-bar" id="search-bar-reading">
+            <input class="list-search-input" id="search-input-reading" type="text"
+              placeholder="Buscar em Lendo..."
+              oninput="filterList('reading', this.value)" />
+          </div>
+          <div class="list-items" id="list-reading">
+            <div class="empty-state"><div class="empty-icon">📖</div>Nenhuma leitura em andamento</div>
+          </div>
+        </div>
+
+        <div class="list-col">
+          <div class="list-col-header">
+            <span class="list-col-title">Lido</span>
+            <div class="list-header-right">
+              <button class="list-search-btn" onclick="toggleListSearch('read')" title="Buscar na lista">
+                <img src="./icons/search.svg" width="14" height="14" />
+              </button>
+              <span class="list-count" id="count-read">0</span>
+            </div>
+          </div>
+          <div class="list-search-bar" id="search-bar-read">
+            <input class="list-search-input" id="search-input-read" type="text"
+              placeholder="Buscar em Lido..."
+              oninput="filterList('read', this.value)" />
+          </div>
+          <div class="list-items" id="list-read">
+            <div class="empty-state"><div class="empty-icon">✓</div>Nenhuma leitura concluída</div>
+          </div>
+        </div>
+
+        <div class="list-col">
+          <div class="list-col-header">
+            <span class="list-col-title">Para ler</span>
+            <div class="list-header-right">
+              <button class="list-search-btn" onclick="toggleListSearch('toread')" title="Buscar na lista">
+                <img src="./icons/search.svg" width="14" height="14" />
+              </button>
+              <span class="list-count" id="count-toread">0</span>
+            </div>
+          </div>
+          <div class="list-search-bar" id="search-bar-toread">
+            <input class="list-search-input" id="search-input-toread" type="text"
+              placeholder="Buscar em Para ler..."
+              oninput="filterList('toread', this.value)" />
+          </div>
+          <div class="list-items" id="list-toread">
+            <div class="empty-state"><div class="empty-icon">📋</div>Nenhuma leitura na fila</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- BUSCA -->
     <div class="page" id="page-busca">
       <div class="page-header">
@@ -413,7 +495,7 @@
         </div>
 
         <div class="config-character">
-          <img src="./imgs/man-BW.png" class="config-character-img" />
+          <img src="./imgs/man-BW.png" class="config-character-img" id="configCharacterImg" />
         </div>
       </div>
     </div>
@@ -429,11 +511,7 @@
 
       <div class="detail-header">
         <div class="detail-header-left">
-          <div class="detail-list-selector" id="detailListSelector">
-            <div class="list-selector-opt" data-status="watching" onclick="setAnimeStatus('watching')">Assistindo</div>
-            <div class="list-selector-opt" data-status="watched" onclick="setAnimeStatus('watched')">Assistidos</div>
-            <div class="list-selector-opt" data-status="plan" onclick="setAnimeStatus('plan')">Para assistir</div>
-          </div>
+          <div class="detail-list-selector" id="detailListSelector"></div>
           <div class="detail-name-wrap">
             <input class="detail-name" id="detailName" type="text" value="" />
             <span class="detail-edit-hint">✎ editar</span>
@@ -447,7 +525,7 @@
           <div class="detail-share" title="Compartilhar" onclick="openSharePage()" id="shareBtn">
             <img src="./icons/share.svg" />
           </div>
-          <div class="detail-share" title="Apagar anime" onclick="showDeletePopup()">
+          <div class="detail-share" title="Apagar" onclick="showDeletePopup()">
             <img src="./icons/trash.svg" />
           </div>
           <div class="detail-share" title="Tutorial" onclick="startTutorial()">
@@ -462,21 +540,19 @@
       <!-- DELETE POPUP -->
       <div id="deleteOverlay" class="delete-overlay" style="display:none;" onclick="hideDeletePopup()"></div>
       <div id="deletePopup" class="delete-popup" style="display:none;">
-        <p class="delete-popup-text">Tem certeza que deseja apagar este anime?</p>
+        <p class="delete-popup-text" id="deletePopupText">Tem certeza que deseja apagar este item?</p>
         <div class="delete-popup-btns">
           <button class="delete-btn-yes" onclick="confirmDelete()">Sim</button>
           <button class="delete-btn-no" onclick="hideDeletePopup()">Não</button>
         </div>
       </div>
 
-      <div class="detail-two-col">
+      <div class="detail-main-content">
 
-        <!-- COLUNA ESQUERDA: Progresso + campos -->
-        <div class="detail-col-left">
+          <!-- PROGRESSO (eps ou caps) -->
           <div class="detail-progress-section">
             <div class="progress-label">
-              <span class="progress-title">Progresso</span>
-              <span class="airing-next-tag" id="airingNextTag" style="display:none;"></span>
+              <span class="progress-title" id="detailProgressTitle">Progresso</span>
               <span class="airing-next-tag" id="airingNextTag" style="display:none;"></span>
               <div class="progress-inputs">
                 <input class="progress-num" id="detailEpWatched" type="number" min="0" value="0"
@@ -484,7 +560,7 @@
                   onchange="validateEpWatched(this)" />
                 <span class="progress-sep">/</span>
                 <input class="progress-num" id="detailEpTotal" type="number" min="0" value="0" oninput="updateProgress()" />
-                <span class="progress-sep" style="margin-left:2px;">eps</span>
+                <span class="progress-sep progress-unit" id="detailProgressUnit" style="margin-left:2px;">eps</span>
               </div>
             </div>
             <div class="progress-bar-wrap">
@@ -493,14 +569,52 @@
             <div class="ep-warning" id="epWarning"></div>
           </div>
 
-          <div class="detail-fields-row">
+          <!-- VOLUMES (somente leituras) -->
+          <div class="detail-volumes-section" id="detailVolumesSection" style="display:none;">
+            <div class="progress-label">
+              <span class="progress-title">Volumes</span>
+              <div class="progress-inputs">
+                <input class="progress-num" id="detailVolRead" type="number" min="0" value="0" oninput="updateVolumesProgress()" />
+                <span class="progress-sep">/</span>
+                <input class="progress-num" id="detailVolTotal" type="number" min="0" value="0" oninput="updateVolumesProgress()" />
+                <span class="progress-sep" style="margin-left:2px;">vols</span>
+              </div>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="detailVolProgressFill" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- CAMPOS EXTRAS -->
+          <div class="detail-fields-row" id="detailFieldsRow">
             <div class="detail-field-group">
               <label class="detail-field-label">Data de adição</label>
               <input class="detail-field-input" type="date" id="detailDateAdded" />
             </div>
+            <!-- Formato (leitura) -->
+            <div class="detail-field-group" id="detailFormatGroup" style="display:none;">
+              <label class="detail-field-label">Formato</label>
+              <select class="detail-field-input" id="detailFormat" onchange="saveDetailFormat()">
+                <option value="">— selecionar —</option>
+                <option value="manga">Mangá Tankōbon</option>
+                <option value="webtoon">Webtoon</option>
+                <option value="manhwa">Manhwa</option>
+                <option value="manhua">Manhua</option>
+                <option value="novel">Novel</option>
+              </select>
+            </div>
+            <!-- Status publicação (leitura) -->
+            <div class="detail-field-group" id="detailPubStatusGroup" style="display:none;">
+              <label class="detail-field-label">Publicação</label>
+              <div class="pub-status-selector" id="detailPubStatus">
+                <div class="pub-status-opt" data-val="ongoing" onclick="setPubStatus('ongoing')">Em publicação</div>
+                <div class="pub-status-opt" data-val="finished" onclick="setPubStatus('finished')">Completo</div>
+              </div>
+            </div>
           </div>
 
-          <div class="detail-seasons-section">
+          <!-- TEMPORADAS (somente animes) -->
+          <div class="detail-seasons-section" id="detailSeasonsSection">
             <div class="detail-seasons-header">
               <span class="detail-field-label">Temporadas</span>
               <input class="seasons-count-input" id="seasonsCountInput" type="number" min="0" value="0"
@@ -517,65 +631,115 @@
             </div>
             <div id="seasonsList"></div>
           </div>
-        </div>
-
-        <!-- COLUNA DIREITA: Em lançamento -->
-        <div class="detail-col-right">
-          <div class="airing-section">
-            <div class="airing-toggle-row">
-              <div class="airing-toggle-left">
-                <span class="airing-toggle-label">Em lançamento</span>
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="airingToggle" onchange="onAiringToggle()" />
-                <span class="toggle-track"></span>
-              </label>
-            </div>
-
-            <div class="airing-body" id="airingBody" style="display:none;">
-              <div class="airing-fields">
-                <div class="airing-field-group">
-                  <label class="detail-field-label">Data do 1º episódio</label>
-                  <input class="detail-field-input" type="date" id="airingFirstDate" oninput="onAiringFieldChange()" />
-                </div>
-                <div class="airing-field-group">
-                  <label class="detail-field-label">Dia de lançamento</label>
-                  <select class="detail-field-input" id="airingWeekday" onchange="onAiringFieldChange()">
-                    <option value="">— selecionar —</option>
-                    <option value="0">Domingo</option>
-                    <option value="1">Segunda</option>
-                    <option value="2">Terça</option>
-                    <option value="3">Quarta</option>
-                    <option value="4">Quinta</option>
-                    <option value="5">Sexta</option>
-                    <option value="6">Sábado</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="airing-calendar">
-                <div class="cal-header">
-                  <button type="button" class="cal-nav" onclick="calPrevMonth()">&#8249;</button>
-                  <div class="cal-month-year">
-                    <select class="cal-month-sel" id="calMonthSel" onchange="calGoToMonth()"></select>
-                    <select class="cal-year-sel" id="calYearSel" onchange="calGoToMonth()"></select>
-                  </div>
-                  <button type="button" class="cal-nav" onclick="calNextMonth()">&#8250;</button>
-                </div>
-                <div class="cal-weekdays">
-                  <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
-                </div>
-                <div class="cal-grid" id="calGrid"></div>
-              </div>
-
-              <button type="button" class="airing-reset-btn" onclick="resetAiringData()">Resetar dados</button>
-            </div>
-          </div>
-        </div>
 
       </div>
 
     </div>
+
+    <!-- SIDEBAR DIREITA: Calendário de lançamento -->
+    <div class="detail-right-sidebar" id="detailRightSidebar">
+      <button class="detail-sidebar-toggle" id="detailSidebarToggle" onclick="toggleDetailSidebar()" title="Expandir/recolher">
+        <svg id="detailSidebarArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <div class="detail-sidebar-content" id="detailSidebarContent">
+        <div class="airing-section">
+          <div class="airing-toggle-row">
+            <div class="airing-toggle-left">
+              <span class="airing-toggle-label" id="airingToggleLabel">Em lançamento</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="airingToggle" onchange="onAiringToggle()" />
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+
+          <div class="airing-body" id="airingBody" style="display:none;">
+            <!-- Anime: data 1º ep + dia da semana -->
+            <div id="airingAnimeFields" class="airing-fields">
+              <div class="airing-field-group" style="flex:1;">
+                <label class="detail-field-label">Data do 1º episódio</label>
+                <input class="detail-field-input" type="date" id="airingFirstDate" oninput="onAiringFieldChange()" />
+              </div>
+              <div class="airing-field-group" style="flex:1;">
+                <label class="detail-field-label">Dia de lançamento</label>
+                <select class="detail-field-input" id="airingWeekday" onchange="onAiringFieldChange()">
+                  <option value="">— selecionar —</option>
+                  <option value="0">Domingo</option>
+                  <option value="1">Segunda</option>
+                  <option value="2">Terça</option>
+                  <option value="3">Quarta</option>
+                  <option value="4">Quinta</option>
+                  <option value="5">Sexta</option>
+                  <option value="6">Sábado</option>
+                </select>
+              </div>
+            </div>
+            <!-- Leitura: data publicação inicial -->
+            <div id="airingReadFields" class="airing-fields" style="display:none;">
+              <div class="airing-field-group" style="flex:1;">
+                <label class="detail-field-label">Data de publicação inicial</label>
+                <input class="detail-field-input" type="date" id="airingPubDate" oninput="onAiringFieldChange()" />
+              </div>
+            </div>
+
+            <div class="airing-calendar">
+              <div class="cal-header">
+                <div class="cal-header-left">
+                  <select class="cal-month-sel" id="calMonthSel" onchange="calGoToMonth()"></select>
+                  <select class="cal-year-sel" id="calYearSel" onchange="calGoToMonth()"></select>
+                </div>
+                <div class="cal-header-right">
+                  <button type="button" class="cal-icon-btn" title="Buscar (em breve)">
+                    <img src="./icons/search.svg" />
+                  </button>
+                  <button type="button" class="cal-icon-btn" title="Adicionar" onclick="openCalAddPanel(event)">
+                    <img src="./icons/plus-solid-full.svg" />
+                  </button>
+                </div>
+              </div>
+              <div class="cal-weekdays">
+                <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+              </div>
+              <div class="cal-grid" id="calGrid"></div>
+            </div>
+
+            <!-- PAINEL ADICIONAR TAG -->
+            <div id="calAddPanel" class="cal-add-panel" style="display:none;">
+              <div class="cal-add-title">Adicionar tag</div>
+
+              <div class="cal-add-field">
+                <label class="cal-add-label">Data</label>
+                <input class="cal-add-input" type="date" id="calAddDate" onchange="onCalAddDateChange()" />
+              </div>
+
+              <!-- Anime: select de episódio -->
+              <div id="calAddEpWrap" class="cal-add-field">
+                <label class="cal-add-label">Episódio</label>
+                <select class="cal-add-input" id="calAddEpSelect">
+                  <option value="">— escolher episódio —</option>
+                </select>
+              </div>
+
+              <!-- Leitura: campo de texto livre -->
+              <div id="calAddTagWrap" class="cal-add-field" style="display:none;">
+                <label class="cal-add-label">Tag</label>
+                <input class="cal-add-input" type="text" id="calAddTagInput" placeholder="ex: cap. 134" maxlength="20" />
+              </div>
+
+              <div class="cal-add-actions">
+                <button class="cal-add-btn-save" onclick="saveCalAddPanel()">Salvar</button>
+                <button class="cal-add-btn-cancel" onclick="closeCalAddPanel()">Cancelar</button>
+              </div>
+            </div>
+
+            <button type="button" class="airing-reset-btn" onclick="resetAiringData()">Resetar dados</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
   <!-- SHARE PAGE -->
   <div id="page-share" class="page">
@@ -600,7 +764,7 @@
           <div class="sc-stars" id="scStars"></div>
         </div>
         <div class="sc-footer">
-          <img class="sc-logo" src="./favicons/logomarca_4_blackBG.png" />
+          <img class="sc-logo" src="./favicons/okiruv2-logomarca-black.png" />
         </div>
       </div>
     </div>
@@ -634,7 +798,7 @@
 
       <div class="smodal-section">
         <span class="smodal-label">Lista</span>
-        <div class="smodal-list-selector">
+        <div class="smodal-list-selector" id="smodalListSelector">
           <div class="smodal-list-opt" data-status="watching" onclick="setSmodalStatus('watching')">Assistindo</div>
           <div class="smodal-list-opt" data-status="watched"  onclick="setSmodalStatus('watched')">Assistidos</div>
           <div class="smodal-list-opt" data-status="plan"     onclick="setSmodalStatus('plan')">Para assistir</div>
@@ -655,7 +819,7 @@
             onchange="validateSmodalEpWatched(this)" />
           <span style="color:var(--secondary)">/</span>
           <input class="smodal-prog-num" id="smodalEpTotal" type="number" min="0" value="0" oninput="updateSmodalProgress()" />
-          <span style="color:var(--secondary); margin-left:2px;">eps</span>
+          <span style="color:var(--secondary); margin-left:2px;" id="smodalEpsLabel">eps</span>
         </div>
         <div class="progress-bar-wrap">
           <div class="progress-bar-fill" id="smodalProgressFill" style="width:0%"></div>
@@ -668,7 +832,7 @@
         <input class="smodal-date" type="date" id="smodalDate" />
       </div>
 
-      <div class="smodal-section">
+      <div class="smodal-section" id="smodalSeasonSection">
         <span class="smodal-label">Temporadas</span>
         <div class="smodal-seasons-wrap">
           <input class="smodal-seasons-input" type="text" placeholder="Buscar temporada..." />
@@ -709,6 +873,21 @@
 </nav>
 
 <!-- Scripts (ordem importa: data antes de tudo, init por último) -->
+<script>
+function toggleChangelog(e) {
+  e.stopPropagation();
+  const balloon = document.getElementById('changelogBalloon');
+  const isOpen  = balloon.classList.contains('open');
+  balloon.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    setTimeout(() => document.addEventListener('click', _closeChangelog), 0);
+  }
+}
+function _closeChangelog() {
+  document.getElementById('changelogBalloon')?.classList.remove('open');
+  document.removeEventListener('click', _closeChangelog);
+}
+</script>
 <script src="data.js"></script>
 <script src="detail.js"></script>
 <script src="search.js"></script>
@@ -716,9 +895,23 @@
 <script src="stats.js"></script>
 <script src="share.js"></script>
 <script src="airing.js"></script>
-<script src="airing.js"></script>
 <script src="settings.js"></script>
 <script src="navigation.js"></script>
 <script src="init.js"></script>
+<!-- CHANGELOG BALLOON (fora da sidebar para não expandir o layout) -->
+<div class="changelog-balloon" id="changelogBalloon">
+  <div class="changelog-balloon-title">O que há de novo</div>
+  <ul class="changelog-list">
+    <li><strong>Tela de detalhe</strong> — botões de ação (compartilhar, lixo, tutorial, favoritar) movidos para baixo das estrelas</li>
+    <li><strong>Calendário</strong> — novo visual sem bordas, cabeçalho com mês grande + ano cinza, ícones de lupa e +</li>
+    <li><strong>Calendário</strong> — dia atual marcado com bolinha preta/branca conforme o tema</li>
+    <li><strong>Calendário</strong> — dias com episódio marcado exibem bolinha indicadora</li>
+    <li><strong>Calendário</strong> — seletor de ano vai de 2000 a 2030 com scroll</li>
+    <li><strong>Calendário</strong> — painel "Adicionar tag" via ícone +, com campo de data e seletor de episódio</li>
+    <li><strong>Geral</strong> — dias anteriores ao atual deixaram de aparecer em cinza</li>
+    <li><strong>Correção</strong> — sidebar direita agora some ao sair da tela de detalhe</li>
+  </ul>
+</div>
+
 </body>
 </html>
