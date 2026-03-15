@@ -350,6 +350,13 @@
     #page-detail { display: none; padding: 36px 40px; animation: fadeIn 0.2s ease; }
     #page-detail.active { display: block; }
 
+    .detail-nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
     .detail-back {
       display: inline-flex;
       align-items: center;
@@ -357,7 +364,7 @@
       color: var(--secondary);
       font-size: 0.9286rem;
       cursor: pointer;
-      margin-bottom: 28px;
+      margin-bottom: 1.4px;
       transition: color 0.15s;
       user-select: none;
     }
@@ -2717,7 +2724,7 @@
       /* ══════════════════════
          DETALHE
       ══════════════════════ */
-      #page-detail { padding: 16px 16px 32px; }
+      #page-detail { padding: 10px 16px 32px; }
 
       /* Thumb grande no topo */
       .detail-thumb-mobile {
@@ -3160,5 +3167,125 @@
       .mobile-menu-bottom {
         border-top: 1px solid var(--border);
         padding: 6px 0;
+      }
+    }
+
+    /* ─── BOTÃO CIRCULAR DETALHE (mobile) ─── */
+    .detail-nav-circle-btn {
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      .detail-nav-circle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #0A0A0A;
+        border: none;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      html.theme-dark .detail-nav-circle-btn {
+        background: #F5F5F5;
+      }
+
+      .detail-nav-circle-btn img {
+        width: 14px;
+        height: 14px;
+        display: block;
+        filter: invert(1);
+        transform: rotate(180deg);
+      }
+
+      html.theme-dark .detail-nav-circle-btn img {
+        filter: invert(1);
+        transform: rotate(180deg);
+      }
+    }
+
+    /* ─── SIDEBAR MOBILE DIREITA (tela de detalhe) ─── */
+    .detail-mobile-panel {
+      display: none;
+    }
+
+    .detail-mobile-panel-overlay {
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      .detail-mobile-panel {
+        display: block;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 80vw;
+        max-width: 300px;
+        background: var(--bg);
+        border-left: 1px solid var(--border);
+        z-index: 400;
+        transform: translateX(100%);
+        transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      }
+
+      .detail-mobile-panel.open {
+        transform: translateX(0);
+      }
+
+      .detail-mobile-panel-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.35);
+        z-index: 399;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.28s ease;
+      }
+
+      .detail-mobile-panel-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* Botão toggle do painel de lançamento — oculto por padrão */
+      .airing-panel-toggle-btn {
+        display: none;
+        position: absolute;
+        top: 10px;
+        left: 6px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #0A0A0A;
+        border: none;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      html.theme-dark .airing-panel-toggle-btn {
+        background: #F5F5F5;
+      }
+
+      /* Aparece apenas quando o painel está aberto */
+      .detail-mobile-panel.open .airing-panel-toggle-btn {
+        display: flex;
+      }
+
+      .airing-panel-toggle-btn img {
+        width: 14px;
+        height: 14px;
+        display: block;
+        filter: invert(1);
+      }
+
+      html.theme-dark .airing-panel-toggle-btn img {
+        filter: invert(0);
       }
     }

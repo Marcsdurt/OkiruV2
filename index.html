@@ -513,14 +513,27 @@
       </div>
     </div>
 
-    <!-- DETALHE -->
+    <!-- DETALHE -->\
     <div id="page-detail">
-      <div class="detail-back" onclick="closeDetail()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-        Voltar
+      <div class="detail-nav-row">
+        <div class="detail-back" onclick="closeDetail()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          Voltar
+        </div>
+        <button class="detail-nav-circle-btn" id="detailMobilePanelBtn" onclick="toggleDetailMobilePanel()">
+          <img src="./icons/angle-right.svg" />
+        </button>
       </div>
+
+      <!-- SIDEBAR MOBILE DIREITA -->
+      <div class="detail-mobile-panel" id="detailMobilePanel">
+        <button class="airing-panel-toggle-btn" id="airingPanelToggleBtn" onclick="toggleDetailMobilePanel()">
+          <img src="./icons/angle-right.svg" />
+        </button>
+      </div>
+      <div class="detail-mobile-panel-overlay" id="detailMobilePanelOverlay" onclick="toggleDetailMobilePanel()"></div>
 
       <div class="detail-header">
         <div class="detail-header-left">
@@ -927,6 +940,23 @@
 </div>
 
 <script>
+function toggleDetailMobilePanel() {
+  const panel   = document.getElementById('detailMobilePanel');
+  const overlay = document.getElementById('detailMobilePanelOverlay');
+  const btnOut  = document.getElementById('detailMobilePanelBtn');
+  const isOpen  = panel.classList.contains('open');
+
+  if (isOpen) {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    btnOut.style.display = '';
+  } else {
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    btnOut.style.display = 'none';
+  }
+}
+
 function openMobileMenu() {
   document.getElementById('mobileMenu').classList.add('open');
   document.getElementById('mobileMenuOverlay').classList.add('open');
