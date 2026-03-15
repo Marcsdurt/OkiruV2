@@ -60,13 +60,6 @@
       <div class="nav-item" data-page="config">
         <span class="nav-icon"><img src="./icons/gear.svg" width="16" height="16" /></span> Configurações
       </div>
-
-      <!-- CHANGELOG BADGE -->
-      <div class="sidebar-changelog" id="sidebarChangelog" onclick="toggleChangelog(event)">
-        <span class="sidebar-changelog-dot"></span>
-        <span class="sidebar-changelog-label">v2.1 · novidades</span>
-      </div>
-
       <div class="sidebar-profile" id="sidebarProfile" style="display:none;" onclick="document.querySelector('[data-page=perfil]').click()">
         <div class="sidebar-profile-avatar" id="sidebarAvatar"></div>
         <span class="sidebar-profile-name" id="sidebarName"></span>
@@ -79,6 +72,10 @@
 
     <!-- INÍCIO -->
     <div class="page active" id="page-inicio">
+      <div class="mobile-top-bar">
+        <button class="mobile-top-btn" onclick="openMobileMenu()"><img src="./icons/bars-solid-full.svg" /></button>
+        <button class="mobile-top-btn" onclick="mobileNav('busca', document.querySelector('.bottom-nav-item[data-page=busca]'))"><img src="./icons/search.svg" /></button>
+      </div>
       <div class="page-header">
         <h1 class="page-title">Séries & Filmes</h1>
         <p class="page-sub">Suas listas de anime</p>
@@ -284,6 +281,10 @@
 
     <!-- PERFIL -->
     <div class="page" id="page-perfil">
+      <div class="mobile-top-bar">
+        <button class="mobile-top-btn" onclick="openMobileMenu()"><img src="./icons/bars-solid-full.svg" /></button>
+        <button class="mobile-top-btn" onclick="mobileNav('busca', document.querySelector('.bottom-nav-item[data-page=busca]'))"><img src="./icons/search.svg" /></button>
+      </div>
       <div class="page-header">
         <h1 class="page-title">Perfil</h1>
       </div>
@@ -320,6 +321,10 @@
 
     <!-- ESTATÍSTICAS -->
     <div class="page" id="page-estatisticas">
+      <div class="mobile-top-bar">
+        <button class="mobile-top-btn" onclick="openMobileMenu()"><img src="./icons/bars-solid-full.svg" /></button>
+        <button class="mobile-top-btn" onclick="mobileNav('busca', document.querySelector('.bottom-nav-item[data-page=busca]'))"><img src="./icons/search.svg" /></button>
+      </div>
       <div class="detail-back stats-back-mobile" onclick="navigateTo('config')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
@@ -362,6 +367,10 @@
 
     <!-- LEITURAS -->
     <div class="page" id="page-leituras">
+      <div class="mobile-top-bar">
+        <button class="mobile-top-btn" onclick="openMobileMenu()"><img src="./icons/bars-solid-full.svg" /></button>
+        <button class="mobile-top-btn" onclick="mobileNav('busca', document.querySelector('.bottom-nav-item[data-page=busca]'))"><img src="./icons/search.svg" /></button>
+      </div>
       <div class="page-header">
         <h1 class="page-title">Leituras</h1>
         <p class="page-sub">Suas listas de mangá e livros</p>
@@ -434,6 +443,10 @@
 
     <!-- BUSCA -->
     <div class="page" id="page-busca">
+      <div class="mobile-top-bar">
+        <button class="mobile-top-btn" onclick="openMobileMenu()"><img src="./icons/bars-solid-full.svg" /></button>
+        <button class="mobile-top-btn" onclick="mobileNav('busca', document.querySelector('.bottom-nav-item[data-page=busca]'))"><img src="./icons/search.svg" /></button>
+      </div>
       <div class="page-header">
         <h1 class="page-title">Buscar anime</h1>
         <p class="page-sub">Resultados via Jikan (MyAnimeList)</p>
@@ -873,21 +886,6 @@
 </nav>
 
 <!-- Scripts (ordem importa: data antes de tudo, init por último) -->
-<script>
-function toggleChangelog(e) {
-  e.stopPropagation();
-  const balloon = document.getElementById('changelogBalloon');
-  const isOpen  = balloon.classList.contains('open');
-  balloon.classList.toggle('open', !isOpen);
-  if (!isOpen) {
-    setTimeout(() => document.addEventListener('click', _closeChangelog), 0);
-  }
-}
-function _closeChangelog() {
-  document.getElementById('changelogBalloon')?.classList.remove('open');
-  document.removeEventListener('click', _closeChangelog);
-}
-</script>
 <script src="data.js"></script>
 <script src="detail.js"></script>
 <script src="search.js"></script>
@@ -898,20 +896,63 @@ function _closeChangelog() {
 <script src="settings.js"></script>
 <script src="navigation.js"></script>
 <script src="init.js"></script>
-<!-- CHANGELOG BALLOON (fora da sidebar para não expandir o layout) -->
-<div class="changelog-balloon" id="changelogBalloon">
-  <div class="changelog-balloon-title">O que há de novo</div>
-  <ul class="changelog-list">
-    <li><strong>Tela de detalhe</strong> — botões de ação (compartilhar, lixo, tutorial, favoritar) movidos para baixo das estrelas</li>
-    <li><strong>Calendário</strong> — novo visual sem bordas, cabeçalho com mês grande + ano cinza, ícones de lupa e +</li>
-    <li><strong>Calendário</strong> — dia atual marcado com bolinha preta/branca conforme o tema</li>
-    <li><strong>Calendário</strong> — dias com episódio marcado exibem bolinha indicadora</li>
-    <li><strong>Calendário</strong> — seletor de ano vai de 2000 a 2030 com scroll</li>
-    <li><strong>Calendário</strong> — painel "Adicionar tag" via ícone +, com campo de data e seletor de episódio</li>
-    <li><strong>Geral</strong> — dias anteriores ao atual deixaram de aparecer em cinza</li>
-    <li><strong>Correção</strong> — sidebar direita agora some ao sair da tela de detalhe</li>
-  </ul>
+<!-- MENU LATERAL MOBILE -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <img id="mobileMenuLogo" src="./favicons/okiruv2-logomarca-white.png" alt="Okiru V2" />
+  </div>
+  <nav class="mobile-menu-nav">
+    <div class="mobile-menu-item" onclick="mobileMenuNav('inicio')">
+      <img src="./icons/clapperboard-solid-full.svg" width="16" height="16" /> Séries & Filmes
+    </div>
+    <div class="mobile-menu-item" onclick="mobileMenuNav('leituras')">
+      <img src="./icons/book-solid-full.svg" width="16" height="16" /> Leituras
+    </div>
+    <div class="mobile-menu-item" onclick="mobileMenuNav('busca')">
+      <img src="./icons/search.svg" width="16" height="16" /> Buscar
+    </div>
+    <div class="mobile-menu-item" onclick="mobileMenuNav('perfil')">
+      <img src="./icons/circle-user.svg" width="16" height="16" /> Perfil
+    </div>
+    <div class="mobile-menu-item" onclick="mobileMenuNav('estatisticas')">
+      <img src="./icons/chart-line-solid.svg" width="16" height="16" /> Estatísticas
+    </div>
+  </nav>
+  <div class="mobile-menu-bottom">
+    <div class="mobile-menu-item" onclick="mobileMenuNav('config')">
+      <img src="./icons/gear.svg" width="16" height="16" /> Configurações
+    </div>
+  </div>
 </div>
+
+<script>
+function openMobileMenu() {
+  document.getElementById('mobileMenu').classList.add('open');
+  document.getElementById('mobileMenuOverlay').classList.add('open');
+  // sincroniza logo com tema
+  const theme = localStorage.getItem('okiru_theme') || 'light';
+  document.getElementById('mobileMenuLogo').src = theme === 'dark'
+    ? './favicons/okiruv2-logomarca-black.png'
+    : './favicons/okiruv2-logomarca-white.png';
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('mobileMenuOverlay').classList.remove('open');
+}
+
+function mobileMenuNav(target) {
+  closeMobileMenu();
+  const btn = document.querySelector(`.bottom-nav-item[data-page="${target}"]`);
+  if (btn) mobileNav(target, btn);
+  else {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-detail')?.classList.remove('active');
+    document.getElementById('page-' + target)?.classList.add('active');
+  }
+}
+</script>
 
 </body>
 </html>
