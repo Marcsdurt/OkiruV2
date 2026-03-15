@@ -1,4 +1,4 @@
-# Okiru V2
+# Okiru V2  ![descrição](https://media.tenor.com/zPCe2_gSxL4AAAAj/hamster.gif)
 
 Okiru V2 é uma versão mais limpa e refinada do Okiru original — um rastreador pessoal de animes, séries, filmes e leituras.
 
