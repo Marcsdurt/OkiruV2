@@ -1129,11 +1129,11 @@
 
     /* ─── PAINEL ADICIONAR TAG ─── */
     .cal-add-panel {
+      margin-top: 12px;
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 14px 14px 12px;
       background: var(--bg);
-      box-shadow: 0 8px 28px rgba(0,0,0,0.18);
       box-sizing: border-box;
       opacity: 0;
       pointer-events: none;

@@ -391,15 +391,21 @@ function closeCalDropdown() {
 function openCalAddPanel(event) {
   if (event) event.stopPropagation();
 
+  const panel = document.getElementById('calAddPanel');
+  if (!panel) return;
+
+  // Toggle — se já está aberto, fecha
+  if (panel.classList.contains('open')) {
+    closeCalAddPanel();
+    return;
+  }
+
   const anime = mockAnimes.find(a => a.id === currentAnimeId);
   if (!anime || !anime.airing?.enabled) return;
 
-  closeCalAddPanel();
   closeCalDropdown();
 
   const reading = ['reading','read','toread'].includes(anime.status);
-  const panel   = document.getElementById('calAddPanel');
-  if (!panel) return;
 
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('calAddDate').value = today;
@@ -417,30 +423,18 @@ function openCalAddPanel(event) {
     buildCalAddEpSelect(anime, today);
   }
 
-  // Posiciona fixed sobre o calendário
-  const calWrap = document.querySelector('.airing-calendar');
-  if (calWrap) {
-    const rect = calWrap.getBoundingClientRect();
-    panel.style.position = 'fixed';
-    panel.style.zIndex   = '9999';
-    panel.style.width    = rect.width + 'px';
-    panel.style.left     = rect.left + 'px';
-    panel.style.top      = rect.top + 'px';
-  }
+  // Remove posicionamento fixed — painel flui abaixo do calendário
+  panel.style.position = '';
+  panel.style.width    = '';
+  panel.style.left     = '';
+  panel.style.top      = '';
+  panel.style.zIndex   = '';
 
   panel.style.display = '';
   requestAnimationFrame(() => panel.classList.add('open'));
-
-  document.addEventListener('click', _calAddOutsideClick);
 }
 
-function _calAddOutsideClick(e) {
-  const panel = document.getElementById('calAddPanel');
-  if (panel && !panel.contains(e.target)) {
-    closeCalAddPanel();
-    document.removeEventListener('click', _calAddOutsideClick);
-  }
-}
+function _calAddOutsideClick() {}
 
 function buildCalAddEpSelect(anime, dateStr) {
   const sel      = document.getElementById('calAddEpSelect');
@@ -516,6 +510,5 @@ function closeCalAddPanel() {
   const panel = document.getElementById('calAddPanel');
   if (!panel) return;
   panel.classList.remove('open');
-  document.removeEventListener('click', _calAddOutsideClick);
   setTimeout(() => { panel.style.display = 'none'; }, 180);
 }
