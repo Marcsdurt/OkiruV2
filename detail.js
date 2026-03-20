@@ -59,6 +59,12 @@ function adaptDetailUI(anime) {
   const seaSec = document.getElementById('detailSeasonsSection');
   if (seaSec) seaSec.style.display = reading ? 'none' : '';
 
+  // Anotações
+  const notesAnime   = document.getElementById('detailNotesSectionAnime');
+  const notesReading = document.getElementById('detailNotesSectionReading');
+  if (notesAnime)   notesAnime.style.display   = reading ? 'none' : '';
+  if (notesReading) notesReading.style.display = reading ? '' : 'none';
+
   // Label do toggle de lançamento
   const toggleLabel = document.getElementById('airingToggleLabel');
   if (toggleLabel) toggleLabel.textContent = reading ? 'Em publicação' : 'Em lançamento';
@@ -83,6 +89,10 @@ function openDetail(id, fromSeason = false) {
         current.volRead  = parseInt(document.getElementById('detailVolRead').value) || 0;
         current.volTotal = parseInt(document.getElementById('detailVolTotal').value) || 0;
       }
+      const notesEl = isReading(current)
+        ? document.getElementById('detailNotesReading')
+        : document.getElementById('detailNotesAnime');
+      if (notesEl) current.notes = notesEl.value;
       saveAnimes();
     }
     if (fromSeason) detailHistory.push(currentAnimeId);
@@ -122,6 +132,13 @@ function openDetail(id, fromSeason = false) {
 
   if (!isReading(anime)) renderSeasonsList();
 
+  // Anotações
+  const notesVal = anime.notes || '';
+  const notesAnimeEl   = document.getElementById('detailNotesAnime');
+  const notesReadingEl = document.getElementById('detailNotesReading');
+  if (notesAnimeEl)   notesAnimeEl.value   = notesVal;
+  if (notesReadingEl) notesReadingEl.value = notesVal;
+
   loadAiringSection(anime);
 
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -158,6 +175,10 @@ function closeDetail() {
       anime.volRead  = parseInt(document.getElementById('detailVolRead').value) || 0;
       anime.volTotal = parseInt(document.getElementById('detailVolTotal').value) || 0;
     }
+    const notesEl = isReading(anime)
+      ? document.getElementById('detailNotesReading')
+      : document.getElementById('detailNotesAnime');
+    if (notesEl) anime.notes = notesEl.value;
     saveAnimes();
   }
 
@@ -259,6 +280,16 @@ function saveDetailFormat() {
   if (!anime) return;
   anime.format = document.getElementById('detailFormat').value;
   saveAnimes();
+}
+
+// ─── ANOTAÇÕES ────────────────────────────────────────────────────────────────
+function saveDetailNotes() {
+  const anime = mockAnimes.find(a => a.id === currentAnimeId);
+  if (!anime) return;
+  const notesEl = isReading(anime)
+    ? document.getElementById('detailNotesReading')
+    : document.getElementById('detailNotesAnime');
+  if (notesEl) { anime.notes = notesEl.value; saveAnimes(); }
 }
 
 // ─── STATUS DE PUBLICAÇÃO ─────────────────────────────────────────────────────

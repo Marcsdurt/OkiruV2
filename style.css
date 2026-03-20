@@ -2252,134 +2252,226 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      background:
-        radial-gradient(ellipse 70% 50% at 30% 10%, rgba(0,0,0,0.04) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 70% 90%, rgba(0,0,0,0.03) 0%, transparent 60%),
-        #f0f0f0;
+      background: #111;
       height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
-      padding-bottom: 32px;
+      padding-bottom: 24px;
     }
     #page-share.active { display: flex; }
 
     .share-hint {
-      color: #999;
+      color: #555;
       font-size: 0.68rem;
       text-align: center;
-      padding: 0 20px 20px;
+      padding: 0 20px 16px;
       flex-shrink: 0;
       margin: 0;
+    }
+
+    /* aviso sem anilistId */
+    .share-no-anilist {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 320px;
+    }
+    .share-no-anilist-icon { font-size: 40px; }
+    .share-no-anilist-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ccc;
+    }
+    .share-no-anilist-text {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.6;
     }
 
     .share-card-wrap {
       width: 100%;
       display: flex;
       justify-content: center;
-      padding: 0 24px;
+      padding: 0 20px;
+      flex: 1;
+      align-items: flex-start;
     }
 
+    /* ── CARD 9:16 ──
+       A altura é limitada a 88dvh para caber na tela mobile.
+       A largura é derivada da altura (9/16) — não o contrário.
+       No desktop com tela grande, o cap de 640px de altura mantém proporção.
+    ── */
     #shareCard {
-      --cw: min(88vw, 380px);
-      width: var(--cw);
-      height: calc(var(--cw) * 16 / 9);
+      --ch: min(88dvh, calc(360px * 16 / 9));
+      --cw: calc(var(--ch) * 9 / 16);
       position: relative;
-      background: radial-gradient(circle at 85% 15%, #1a1a1a 0%, #000 60%);
-      border-radius: calc(var(--cw) * 0.03);
+      width: var(--cw);
+      height: var(--ch);
+      border-radius: 18px;
       overflow: hidden;
-      font-family: 'DM Sans', sans-serif;
-      color: #fff;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+      font-family: 'Iosevka Charon Mono', 'DM Sans', monospace;
       flex-shrink: 0;
     }
 
-    .sc-profile {
+    .sc-bg {
       position: absolute;
-      top: calc(var(--cw) * 16/9 * 0.1031);
-      left: 50%;
-      transform: translateX(-50%);
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(10px) brightness(0.55);
+      transform: scale(1.05);
+    }
+
+    .sc-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-top: calc(var(--cw) * 0.098);
+    }
+
+    /* imagem da capa */
+    .sc-img-wrapper {
+      position: relative;
+      width: calc(var(--cw) * 0.786);
+      height: calc(var(--cw) * 1.186);
+      border-radius: calc(var(--cw) * 0.069);
+      overflow: hidden;
+      align-self: center;
+      flex-shrink: 0;
+    }
+    .sc-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .sc-img-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: calc(var(--cw) * 0.069);
+      box-shadow: inset 0 calc(var(--cw) * -0.231) calc(var(--cw) * 0.111) rgba(0,0,0,0.75);
+    }
+
+    .sc-img-stars {
+      position: absolute;
+      bottom: calc(var(--cw) * 0.195);
+      left: calc(var(--cw) * 0.044);
       display: flex;
       align-items: center;
-      white-space: nowrap;
+      gap: calc(var(--cw) * 0.012);
+      z-index: 2;
+      line-height: 1;
     }
-    .sc-avatar {
-      width: calc(var(--cw) * 0.076);
-      height: calc(var(--cw) * 0.076);
-      border-radius: 50%;
-      background: #555;
-      overflow: hidden;
+    .sc-img-star {
+      font-size: calc(var(--cw) * 0.036);
+      color: #fff;
+      opacity: 0.2;
+    }
+    .sc-img-star.filled {
+      opacity: 1;
+    }
+
+    .sc-img-title {
+      position: absolute;
+      bottom: calc(var(--cw) * 0.137);
+      left: calc(var(--cw) * 0.048);
+      font-size: calc(var(--cw) * 0.056);
+      letter-spacing: calc(var(--cw) * 0.011);
+      color: #fff;
+      text-transform: uppercase;
+      z-index: 2;
+      line-height: 1;
+    }
+
+    .sc-img-studio {
+      position: absolute;
+      bottom: calc(var(--cw) * 0.082);
+      left: calc(var(--cw) * 0.048);
+      display: flex;
+      align-items: center;
+      gap: calc(var(--cw) * 0.022);
+      z-index: 2;
+    }
+    .sc-img-studio span {
+      font-size: calc(var(--cw) * 0.031);
+      letter-spacing: calc(var(--cw) * 0.006);
+      color: rgba(255,255,255,0.8);
+      line-height: 1;
+    }
+
+    /* badges */
+    .sc-badges-row {
+      display: flex;
+      align-items: center;
+      margin-left: calc(var(--cw) * 0.106);
+      margin-top: calc(var(--cw) * 0.046);
+      gap: calc(var(--cw) * 0.035);
       flex-shrink: 0;
     }
-    .sc-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .sc-name {
-      margin-left: calc(var(--cw) * 0.029);
-      font-size: calc(var(--cw) * 0.039);
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .sc-cover {
-      position: absolute;
-      top: calc(var(--cw) * 16/9 * 0.1807);
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(var(--cw) * 0.506);
-      height: calc(var(--cw) * 16/9 * 0.3932);
-      border-radius: calc(var(--cw) * 0.033);
-      overflow: hidden;
-      background: #333;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-    .sc-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-    .sc-info { display: contents; }
-
-    .sc-title {
-      position: absolute;
-      top: calc(var(--cw) * 16/9 * 0.6193);
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(var(--cw) * 0.774);
-      font-size: calc(var(--cw) * 0.065);
-      font-weight: 700;
-      text-align: center;
-      line-height: 1.15;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      color: #fff;
-    }
-    .sc-studio {
-      position: absolute;
-      top: calc(var(--cw) * 16/9 * 0.6714);
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: calc(var(--cw) * 0.03);
-      color: #aaa;
+    .sc-badge {
+      font-size: calc(var(--cw) * 0.025);
+      letter-spacing: calc(var(--cw) * 0.006);
       white-space: nowrap;
-      text-align: center;
+      padding: calc(var(--cw) * 0.014) calc(var(--cw) * 0.039);
+      border-radius: 50px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: uppercase;
     }
-    .sc-studio strong { color: #fff; font-weight: 600; }
-    .sc-stars {
-      position: absolute;
-      top: calc(var(--cw) * 16/9 * 0.7271);
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(var(--cw) * 0.396);
-      display: flex;
-      justify-content: space-between;
-      font-size: calc(var(--cw) * 0.072);
+    .sc-badge-status {
+      color: #fff;
+      border: 1px solid #fff;
+      background: transparent;
     }
-    .sc-footer {
-      position: absolute;
-      bottom: calc(var(--cw) * 16/9 * 0.0542);
-      left: 50%;
-      transform: translateX(-50%);
+    .sc-badge-genre {
+      color: #000;
+      border: none;
+      background: #fff;
     }
-    .sc-logo { height: calc(var(--cw) * 0.09); width: auto; display: block; }
+
+    /* sinopse */
+    .sc-synopsis-wrap {
+      width: calc(var(--cw) * 0.786);
+      align-self: center;
+      margin-top: calc(var(--cw) * 0.05);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .sc-synopsis-text {
+      font-size: calc(var(--cw) * 0.025);
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    /* tag de mídia */
+    .sc-media-tag {
+      font-size: calc(var(--cw) * 0.017);
+      letter-spacing: calc(var(--cw) * 0.003);
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #fff;
+      white-space: nowrap;
+      padding: calc(var(--cw) * 0.011) calc(var(--cw) * 0.028);
+      border-radius: 2px;
+      background: #333;
+      margin-left: calc(var(--cw) * 0.106);
+      margin-top: calc(var(--cw) * 0.033);
+      display: inline-block;
+      line-height: 1;
+      flex-shrink: 0;
+    }
 
     .bottom-nav.hidden-for-share { display: none !important; }
-
 
     #tutorialOverlay {
       position: fixed;
@@ -3289,5 +3381,3 @@
         filter: invert(0);
       }
     }
-
-/* Isso é um comentário em CSS */

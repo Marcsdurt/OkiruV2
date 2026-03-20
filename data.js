@@ -58,7 +58,10 @@ function renderList(key, items) {
   const countEl = document.getElementById('count-' + key);
   countEl.textContent = items.length;
 
-  if (!items.length) return;
+  if (!items.length) {
+    el.innerHTML = '';
+    return;
+  }
 
   el.innerHTML = items.map(a => {
     const seasonCount = a.seasonCount !== undefined ? a.seasonCount : (a.seasons?.length || 0);

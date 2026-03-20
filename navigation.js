@@ -12,6 +12,10 @@ navItems.forEach(item => {
         anime.epWatched = parseInt(document.getElementById('detailEpWatched').value) || 0;
         anime.epTotal   = parseInt(document.getElementById('detailEpTotal').value) || 0;
         anime.dateAdded = document.getElementById('detailDateAdded').value || '';
+        const notesEl = (typeof isReading === 'function' && isReading(anime))
+          ? document.getElementById('detailNotesReading')
+          : document.getElementById('detailNotesAnime');
+        if (notesEl) anime.notes = notesEl.value;
         saveAnimes();
       }
     }

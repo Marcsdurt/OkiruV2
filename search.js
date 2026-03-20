@@ -31,7 +31,7 @@ async function malSearch() {
           type
           format
           title { romaji english native }
-          coverImage { large }
+          coverImage { extraLarge large }
           startDate { year }
           episodes
           chapters
@@ -85,7 +85,7 @@ async function malSearch() {
 
     container.innerHTML = results.map(a => {
       const isManga = a.type === 'MANGA' || MANGA_FORMATS.includes(a.format);
-      const img     = a.coverImage?.large || '';
+      const img     = a.coverImage?.extraLarge || a.coverImage?.large || '';
       const title   = a.title?.romaji || a.title?.english || '';
       const year    = a.startDate?.year || '—';
       const count   = isManga

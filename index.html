@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -22,6 +21,7 @@
   <link rel="apple-touch-icon" href="./icons/pwa-icon-192.png" />
 
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Iosevka+Charon+Mono&display=swap" rel="stylesheet" />
 
   <!-- Estilos -->
   <link rel="stylesheet" href="style.css" />
@@ -778,20 +778,35 @@
     </div>
     <p class="share-hint">Tire um print desta tela para compartilhar</p>
 
-    <div class="share-card-wrap">
+    <!-- Aviso quando não há anilistId -->
+    <div id="shareNoAnilist" class="share-no-anilist" style="display:none;">
+      <div class="share-no-anilist-icon">🎌</div>
+      <div class="share-no-anilist-title">Card indisponível</div>
+      <div class="share-no-anilist-text">Este anime foi adicionado manualmente e não possui vínculo com a AniList. A sinopse é necessária para exibir o card. Para gerar o card, remova e adicione novamente via busca.</div>
+    </div>
+
+    <div class="share-card-wrap" id="shareCardWrap">
       <div id="shareCard">
-        <div class="sc-profile">
-          <div class="sc-avatar" id="scAvatar"></div>
-          <span class="sc-name" id="scName"></span>
-        </div>
-        <div class="sc-cover" id="scCover"></div>
-        <div class="sc-info">
-          <div class="sc-title" id="scTitle"></div>
-          <div class="sc-studio" id="scStudio"></div>
-          <div class="sc-stars" id="scStars"></div>
-        </div>
-        <div class="sc-footer">
-          <img class="sc-logo" src="./favicons/okiruv2-logomarca-black.png" />
+        <!-- Fundo com blur -->
+        <div class="sc-bg" id="scBg"></div>
+        <!-- Canvas oculto para extração de cor -->
+        <canvas id="scCanvas" style="display:none;"></canvas>
+        <!-- Conteúdo -->
+        <div class="sc-content">
+          <div class="sc-img-wrapper" id="scImgWrapper">
+            <img id="scMainImg" crossorigin="anonymous" src="" alt="" />
+            <div class="sc-img-stars" id="scImgStars"></div>
+            <div class="sc-img-title" id="scImgTitle"></div>
+            <div class="sc-img-studio" id="scImgStudio"></div>
+          </div>
+          <div class="sc-badges-row" id="scBadgesRow">
+            <div class="sc-badge sc-badge-status" id="scBadgeStatus"></div>
+            <div class="sc-badge sc-badge-genre" id="scBadgeGenre"></div>
+          </div>
+          <div class="sc-synopsis-wrap">
+            <div class="sc-synopsis-text" id="scSynopsisText"></div>
+          </div>
+          <div class="sc-media-tag" id="scMediaTag"></div>
         </div>
       </div>
     </div>
@@ -987,6 +1002,3 @@ function mobileMenuNav(target) {
 
 </body>
 </html>
-
-
-<!-- Isso é um comentário em HTML -->
