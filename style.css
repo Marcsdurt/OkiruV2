@@ -2803,7 +2803,7 @@
       }
 
       /* ── Sidebar: off ── */
-      .sidebar { display: none !important; }
+      .sidebar { display: none; }
 
       /* ── Show mobile-only elements ── */
       #mobileTabs { display: flex !important; }

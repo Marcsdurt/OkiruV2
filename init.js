@@ -117,15 +117,19 @@ initMobileTabsLeituras();
 renderMobileListLeituras();
 
 function applyMobileVisibility() {
-  const isMobile = window.innerWidth <= 640;
-  const tabs        = document.getElementById('mobileTabs');
-  const panel       = document.getElementById('mobileListPanel');
-  const tabsL       = document.getElementById('mobileTabsLeituras');
-  const panelL      = document.getElementById('mobileListPanelLeituras');
-  if (tabs)   tabs.style.display   = isMobile ? 'flex'  : 'none';
-  if (panel)  panel.style.display  = isMobile ? 'block' : 'none';
-  if (tabsL)  tabsL.style.display  = isMobile ? 'flex'  : 'none';
-  if (panelL) panelL.style.display = isMobile ? 'block' : 'none';
+  const isMobile  = window.innerWidth <= 640;
+  const tabs      = document.getElementById('mobileTabs');
+  const panel     = document.getElementById('mobileListPanel');
+  const tabsL     = document.getElementById('mobileTabsLeituras');
+  const panelL    = document.getElementById('mobileListPanelLeituras');
+  const sidebar   = document.querySelector('.sidebar');
+  const bottomNav = document.querySelector('.bottom-nav');
+  if (tabs)      tabs.style.display      = isMobile ? 'flex'  : 'none';
+  if (panel)     panel.style.display     = isMobile ? 'block' : 'none';
+  if (tabsL)     tabsL.style.display     = isMobile ? 'flex'  : 'none';
+  if (panelL)    panelL.style.display    = isMobile ? 'block' : 'none';
+  if (sidebar)   sidebar.style.display   = isMobile ? 'none'  : 'flex';
+  if (bottomNav) bottomNav.style.display = isMobile ? 'flex'  : 'none';
 }
 applyMobileVisibility();
 window.addEventListener('resize', applyMobileVisibility);
