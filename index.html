@@ -464,6 +464,10 @@
 
     <!-- CONFIG -->
     <div class="page" id="page-config">
+      <div class="mobile-top-bar">
+        <button class="mobile-top-btn" onclick="openMobileMenu()"><img src="./icons/bars-solid-full.svg" /></button>
+        <button class="mobile-top-btn" onclick="mobileNav('busca', document.querySelector('.bottom-nav-item[data-page=busca]'))"><img src="./icons/search.svg" /></button>
+      </div>
       <div class="page-header">
         <h1 class="page-title">Configurações</h1>
         <p class="page-sub">Preferências do Okiru V2</p>
@@ -514,7 +518,7 @@
       </div>
     </div>
 
-    <!-- DETALHE -->\
+    <!-- DETALHE -->
     <div id="page-detail">
       <div class="detail-nav-row">
         <div class="detail-back" onclick="closeDetail()">
@@ -659,12 +663,24 @@
             <div id="seasonsList"></div>
           </div>
 
+          <!-- ANOTAÇÕES (anime) -->
+          <div class="detail-notes-section" id="detailNotesSectionAnime">
+            <label class="detail-field-label">Anotações</label>
+            <textarea class="detail-notes-input" id="detailNotesAnime" placeholder="Adicione suas anotações aqui..." oninput="saveDetailNotes()"></textarea>
+          </div>
+
+          <!-- ANOTAÇÕES (leitura) -->
+          <div class="detail-notes-section" id="detailNotesSectionReading" style="display:none;">
+            <label class="detail-field-label">Anotações</label>
+            <textarea class="detail-notes-input" id="detailNotesReading" placeholder="Adicione suas anotações aqui..." oninput="saveDetailNotes()"></textarea>
+          </div>
+
       </div>
 
     </div>
 
     <!-- SIDEBAR DIREITA: Calendário de lançamento -->
-    <div class="detail-right-sidebar" id="detailRightSidebar">
+    <div class="detail-right-sidebar" id="detailRightSidebar" style="display:none;">
       <button class="detail-sidebar-toggle" id="detailSidebarToggle" onclick="toggleDetailSidebar()" title="Expandir/recolher">
         <svg id="detailSidebarArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
@@ -778,23 +794,20 @@
     </div>
     <p class="share-hint">Tire um print desta tela para compartilhar</p>
 
-    <!-- Aviso quando não há anilistId -->
+    <!-- Aviso quando não há nome -->
     <div id="shareNoAnilist" class="share-no-anilist" style="display:none;">
       <div class="share-no-anilist-icon">🎌</div>
       <div class="share-no-anilist-title">Card indisponível</div>
-      <div class="share-no-anilist-text">Este anime foi adicionado manualmente e não possui vínculo com a AniList. A sinopse é necessária para exibir o card. Para gerar o card, remova e adicione novamente via busca.</div>
+      <div class="share-no-anilist-text">Não foi possível identificar este item para gerar o card.</div>
     </div>
 
     <div class="share-card-wrap" id="shareCardWrap">
       <div id="shareCard">
-        <!-- Fundo com blur -->
         <div class="sc-bg" id="scBg"></div>
-        <!-- Canvas oculto para extração de cor -->
         <canvas id="scCanvas" style="display:none;"></canvas>
-        <!-- Conteúdo -->
         <div class="sc-content">
           <div class="sc-img-wrapper" id="scImgWrapper">
-            <img id="scMainImg" crossorigin="anonymous" src="" alt="" />
+            <img id="scMainImg" src="" alt="" />
             <div class="sc-img-stars" id="scImgStars"></div>
             <div class="sc-img-title" id="scImgTitle"></div>
             <div class="sc-img-studio" id="scImgStudio"></div>
@@ -809,6 +822,14 @@
           <div class="sc-media-tag" id="scMediaTag"></div>
         </div>
       </div>
+    </div>
+
+    <div id="shareImgActions" style="display:none;">
+      <input type="file" id="shareImgInput" accept="image/*" style="display:none;" onchange="onShareImgChange(event)" />
+      <button class="share-img-btn" onclick="document.getElementById('shareImgInput').click()">
+        <img src="./icons/image.svg" width="13" height="13" />
+        Alterar imagem
+      </button>
     </div>
   </div>
 

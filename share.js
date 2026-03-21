@@ -17,6 +17,37 @@ function closeSharePage() {
   page.classList.remove('active');
   detail.classList.add('active');
   document.querySelector('.bottom-nav')?.classList.remove('hidden-for-share');
+  document.getElementById('shareImgActions').style.display = 'none';
+  // Reseta o input para permitir selecionar o mesmo arquivo novamente
+  document.getElementById('shareImgInput').value = '';
+}
+
+// ─── TROCA DE IMAGEM MANUAL ───────────────────────────────────────────────────
+function onShareImgChange(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const src = ev.target.result;
+    document.getElementById('scMainImg').src = src;
+    document.getElementById('scBg').style.backgroundImage = `url('${src}')`;
+    // Re-extrai cores com a nova imagem
+    const auxImg = new Image();
+    auxImg.onload = () => {
+      try {
+        const { light, dark } = extractColors(auxImg);
+        document.getElementById('scImgTitle').style.color = light;
+        document.querySelectorAll('.sc-img-star').forEach(s => s.style.color = light);
+        const badgeStatus = document.getElementById('scBadgeStatus');
+        badgeStatus.style.color       = light;
+        badgeStatus.style.borderColor = light;
+        document.getElementById('scBadgeGenre').style.background = light;
+        document.getElementById('scMediaTag').style.background   = dark;
+      } catch { /* ignora erros de canvas */ }
+    };
+    auxImg.src = src;
+  };
+  reader.readAsDataURL(file);
 }
 
 // ─── BUSCA SINOPSE + ESTÚDIO NA JIKAN (MyAnimeList) ──────────────────────────
@@ -26,7 +57,7 @@ async function fetchJikanData(animeName, isManga) {
   const res  = await fetch(url);
   const data = await res.json();
   const item = data?.data?.[0];
-  if (!item) return { synopsis: '', studio: '' };
+  if (!item) return { synopsis: '', studio: '', year: '' };
 
   const synopsis = (item.synopsis || '')
     .replace(/\s*\[Written by MAL Rewrite\]/gi, '').trim();
@@ -36,7 +67,11 @@ async function fetchJikanData(animeName, isManga) {
     ? (item.serializations?.[0]?.name || item.authors?.[0]?.name || '')
     : (item.studios?.[0]?.name || '');
 
-  return { synopsis, studio };
+  const year = isManga
+    ? (item.published?.prop?.from?.year || '')
+    : (item.aired?.prop?.from?.year || item.year || '');
+
+  return { synopsis, studio, year };
 }
 
 // ─── TRADUÇÃO VIA MYMEMORY ────────────────────────────────────────────────────
@@ -153,6 +188,9 @@ async function renderShareCard() {
 
   noAnilist.style.display = 'none';
   cardWrap.style.display  = 'flex';
+  document.getElementById('shareImgActions').style.display = 'flex';
+  document.getElementById('shareImgActions').style.flexDirection = 'column';
+  document.getElementById('shareImgActions').style.alignItems = 'center';
 
   // ── Busca dados em paralelo: imagem hi-res (AniList) + sinopse (Jikan/MAL) ──
   const synEl = document.getElementById('scSynopsisText');
@@ -182,6 +220,7 @@ async function renderShareCard() {
       synopsis     = jikan.synopsis ? await translateSynopsis(jikan.synopsis) : '';
       // Sobrescreve o estúdio salvo com o da Jikan (mais confiável)
       if (jikan.studio) anime._studioDisplay = jikan.studio;
+      anime._yearDisplay = jikan.year || '';
     })(),
   ]);
 
@@ -199,7 +238,7 @@ async function renderShareCard() {
   const titleText = rawName.length > 13 ? rawName.slice(0, 13) + '…' : rawName;
   document.getElementById('scImgTitle').textContent = titleText;
   const studioName = anime._studioDisplay || anime.studio || '';
-  const year  = anime.dateAdded ? anime.dateAdded.slice(0, 4) : '';
+  const year  = anime._yearDisplay || '';
   const parts = [];
   if (studioName) parts.push(studioName);
   if (year) parts.push(year);

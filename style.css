@@ -1150,6 +1150,40 @@
       max-width: 480px;
     }
 
+    .detail-notes-section {
+      margin-top: 28px;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .detail-notes-input {
+      width: 100%;
+      min-height: 96px;
+      max-height: 260px;
+      resize: vertical;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      line-height: 1.55;
+      padding: 10px 12px;
+      box-sizing: border-box;
+      transition: border-color 0.15s;
+      outline: none;
+    }
+
+    .detail-notes-input::placeholder {
+      color: var(--secondary);
+    }
+
+    .detail-notes-input:focus {
+      border-color: var(--text);
+    }
+
     .detail-seasons-header {
       margin-bottom: 10px;
       display: flex;
@@ -2359,7 +2393,7 @@
       position: absolute;
       inset: 0;
       border-radius: calc(var(--cw) * 0.069);
-      box-shadow: inset 0 calc(var(--cw) * -0.231) calc(var(--cw) * 0.111) rgba(0,0,0,0.75);
+      box-shadow: inset 0 calc(var(--cw) * -0.42) calc(var(--cw) * 0.22) rgba(0,0,0,0.92);
     }
 
     .sc-img-stars {
@@ -2472,6 +2506,25 @@
     }
 
     .bottom-nav.hidden-for-share { display: none !important; }
+
+    .share-img-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 18px;
+      padding: 9px 20px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: transparent;
+      color: #777;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      flex-shrink: 0;
+    }
+    .share-img-btn:hover { color: #ccc; border-color: rgba(255,255,255,0.28); }
+    .share-img-btn img { opacity: 0.5; filter: invert(1); }
 
     #tutorialOverlay {
       position: fixed;

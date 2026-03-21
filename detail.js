@@ -292,6 +292,16 @@ function saveDetailNotes() {
   if (notesEl) { anime.notes = notesEl.value; saveAnimes(); }
 }
 
+// ─── ANOTAÇÕES ────────────────────────────────────────────────────────────────
+function saveDetailNotes() {
+  const anime = mockAnimes.find(a => a.id === currentAnimeId);
+  if (!anime) return;
+  const notesEl = isReading(anime)
+    ? document.getElementById('detailNotesReading')
+    : document.getElementById('detailNotesAnime');
+  if (notesEl) { anime.notes = notesEl.value; saveAnimes(); }
+}
+
 // ─── STATUS DE PUBLICAÇÃO ─────────────────────────────────────────────────────
 function setPubStatus(val) {
   const anime = mockAnimes.find(a => a.id === currentAnimeId);

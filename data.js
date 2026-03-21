@@ -69,7 +69,7 @@ function renderList(key, items) {
       ? `<span class="anime-seasons-badge">${seasonCount} temp.</span>`
       : '';
     return `
-      <div class="anime-item" data-name="${a.name.toLowerCase()}" onclick="openDetail(${a.id})">
+      <div class="anime-item" data-id="${a.id}" data-name="${a.name.toLowerCase()}">
         <div class="anime-thumb">
           ${a.img ? `<img src="${a.img}" />` : ''}
         </div>
@@ -84,6 +84,11 @@ function renderList(key, items) {
   // Re-aplica filtro ativo se houver
   const input = document.getElementById('search-input-' + key);
   if (input && input.value) filterList(key, input.value);
+
+  // Event delegation — evita onclick inline que quebra em painéis clonados
+  el.querySelectorAll('.anime-item').forEach(item => {
+    item.addEventListener('click', () => openDetail(Number(item.dataset.id)));
+  });
 }
 
 function toggleListSearch(key) {

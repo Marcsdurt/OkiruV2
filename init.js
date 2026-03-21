@@ -25,7 +25,7 @@ function initMobileTabs() {
     btn.textContent = t.label;
     btn.dataset.key = t.key;
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.mobile-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#mobileTabs .mobile-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeMobileTab = t.key;
       renderMobileList();
@@ -45,7 +45,58 @@ function renderMobileList() {
   panel.innerHTML = src.innerHTML || '<div style="padding:24px;text-align:center;color:var(--secondary);font-size:13px;">Nenhum anime aqui</div>';
   panel.querySelectorAll('.anime-item').forEach(el => {
     const id = el.dataset.id;
-    if (id) el.onclick = () => openDetail(Number(id));
+    if (id) el.addEventListener('click', () => openDetail(Number(id)));
+  });
+}
+
+// ─── MOBILE TABS (Leituras) ───
+let activeMobileTabLeituras = 'reading';
+
+function initMobileTabsLeituras() {
+  const page = document.getElementById('page-leituras');
+  if (!page || page.querySelector('.mobile-tabs-leituras')) return;
+
+  const tabs = [
+    { key: 'reading', label: 'Lendo' },
+    { key: 'read',    label: 'Lidos' },
+    { key: 'toread',  label: 'Para ler' },
+  ];
+
+  const tabBar = document.createElement('div');
+  tabBar.className = 'mobile-tabs mobile-tabs-leituras';
+  tabBar.id = 'mobileTabsLeituras';
+
+  const panel = document.createElement('div');
+  panel.id = 'mobileListPanelLeituras';
+  panel.style.cssText = 'border:1px solid var(--border);border-radius:4px;overflow:hidden;';
+
+  tabs.forEach((t, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'mobile-tab' + (i === 0 ? ' active' : '');
+    btn.textContent = t.label;
+    btn.dataset.key = t.key;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#mobileTabsLeituras .mobile-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeMobileTabLeituras = t.key;
+      renderMobileListLeituras();
+    });
+    tabBar.appendChild(btn);
+  });
+
+  page.appendChild(tabBar);
+  page.appendChild(panel);
+}
+
+function renderMobileListLeituras() {
+  const panel = document.getElementById('mobileListPanelLeituras');
+  if (!panel) return;
+  const src = document.getElementById('list-' + activeMobileTabLeituras);
+  if (!src) return;
+  panel.innerHTML = src.innerHTML || '<div style="padding:24px;text-align:center;color:var(--secondary);font-size:13px;">Nenhuma leitura aqui</div>';
+  panel.querySelectorAll('.anime-item').forEach(el => {
+    const id = el.dataset.id;
+    if (id) el.addEventListener('click', () => openDetail(Number(id)));
   });
 }
 
@@ -62,18 +113,27 @@ loadProfileData();
 updateSidebarProfile();
 initMobileTabs();
 renderMobileList();
+initMobileTabsLeituras();
+renderMobileListLeituras();
 
 function applyMobileVisibility() {
   const isMobile = window.innerWidth <= 640;
-  const tabs = document.getElementById('mobileTabs');
-  const panel = document.getElementById('mobileListPanel');
-  if (tabs)  tabs.style.display  = isMobile ? 'flex'  : 'none';
-  if (panel) panel.style.display = isMobile ? 'block' : 'none';
+  const tabs        = document.getElementById('mobileTabs');
+  const panel       = document.getElementById('mobileListPanel');
+  const tabsL       = document.getElementById('mobileTabsLeituras');
+  const panelL      = document.getElementById('mobileListPanelLeituras');
+  if (tabs)   tabs.style.display   = isMobile ? 'flex'  : 'none';
+  if (panel)  panel.style.display  = isMobile ? 'block' : 'none';
+  if (tabsL)  tabsL.style.display  = isMobile ? 'flex'  : 'none';
+  if (panelL) panelL.style.display = isMobile ? 'block' : 'none';
 }
 applyMobileVisibility();
 window.addEventListener('resize', applyMobileVisibility);
 
-document.addEventListener('okiru:listsUpdated', renderMobileList);
+document.addEventListener('okiru:listsUpdated', () => {
+  renderMobileList();
+  renderMobileListLeituras();
+});
 
 // ─── PWA SERVICE WORKER ───
 if ('serviceWorker' in navigator) {
