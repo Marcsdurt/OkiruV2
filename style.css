@@ -327,6 +327,12 @@
     }
 
     .star.filled { color: #FACC15; }
+    .star.half {
+      background: linear-gradient(to right, #FACC15 50%, #D1D1D1 50%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
     .anime-seasons-badge {
       font-size: 0.7143rem;
@@ -485,6 +491,20 @@
 
     .detail-star:hover { transform: scale(1.2); }
     .detail-star.filled { color: #FACC15; }
+    .detail-star.half {
+      background: linear-gradient(to right, #FACC15 50%, #D1D1D1 50%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .detail-star.hover-filled { color: #FACC15; opacity: 0.75; }
+    .detail-star.hover-half {
+      background: linear-gradient(to right, #FACC15 50%, #D1D1D1 50%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0.75;
+    }
 
     .detail-genres {
       display: flex;
@@ -1457,6 +1477,20 @@
     }
 
     .smodal-star.filled { color: #FACC15; }
+    .smodal-star.half {
+      background: linear-gradient(to right, #FACC15 50%, #D1D1D1 50%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .smodal-star.hover-filled { color: #FACC15; opacity: 0.75; }
+    .smodal-star.hover-half {
+      background: linear-gradient(to right, #FACC15 50%, #D1D1D1 50%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0.75;
+    }
 
     .smodal-list-selector {
       display: inline-flex;
@@ -1996,6 +2030,12 @@
     .fav-card-stars { display: flex; gap: 1px; }
     .fav-card-star { font-size: 0.6429rem; color: #D1D1D1; line-height: 1; }
     .fav-card-star.filled { color: #FACC15; }
+    .fav-card-star.half {
+      background: linear-gradient(to right, #FACC15 50%, #D1D1D1 50%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
     .fav-empty-slot {
       width: 100px;
@@ -2412,6 +2452,13 @@
       opacity: 0.2;
     }
     .sc-img-star.filled {
+      opacity: 1;
+    }
+    .sc-img-star.half {
+      background: linear-gradient(to right, currentColor 50%, transparent 50%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       opacity: 1;
     }
 
@@ -3434,3 +3481,212 @@
         filter: invert(0);
       }
     }
+
+/* ─── PAINEL MOBILE: LANÇAMENTO ─────────────────────────────────────────────── */
+
+/* Layout geral do conteúdo do painel */
+.mobile-panel-content {
+  padding: 52px 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.mobile-panel-section {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+/* ── Row de toggle ── */
+.mobile-panel-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.mobile-panel-toggle-label {
+  font-size: 0.9286rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* ── Toggle switch ROXO ── */
+.toggle-switch-purple {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.toggle-switch-purple input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-track-purple {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  background: var(--border);
+  cursor: pointer;
+  transition: background 0.22s;
+}
+
+.toggle-track-purple::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.22s, background 0.22s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+}
+
+.toggle-switch-purple input:checked + .toggle-track-purple {
+  background: #7c3aed;
+}
+
+.toggle-switch-purple input:checked + .toggle-track-purple::after {
+  transform: translateX(18px);
+}
+
+/* ── Corpo do airing mobile ── */
+.mobile-panel-airing-body {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-panel-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mobile-panel-field-label {
+  font-size: 0.8rem;
+  color: var(--secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ── Select com borda roxa desvanecendo ── */
+.mobile-panel-select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  /* borda com gradiente: roxo forte → transparente */
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 0 0 1.5px #7c3aed55, inset 0 0 0 1px transparent;
+  background-image: none;
+  transition: box-shadow 0.2s;
+}
+
+.mobile-panel-select:focus {
+  box-shadow: 0 0 0 2px #7c3aed, inset 0 0 0 1px transparent;
+}
+
+/* borda roxa com gradiente via pseudo-trick usando outline + border */
+.mobile-panel-select {
+  border: 1.5px solid;
+  border-image: linear-gradient(135deg, #7c3aed 0%, #7c3aed55 60%, transparent 100%) 1;
+  border-radius: 6px;
+  /* border-image não funciona com border-radius, usar box-shadow como alternativa */
+  border: 1.5px solid #7c3aed44;
+  box-shadow: inset 0 0 0 1px transparent, 0 0 0 1px #7c3aed88;
+}
+
+/* ── Botão salvar ── */
+.mobile-panel-save-btn {
+  width: 100%;
+  padding: 10px;
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, opacity 0.18s;
+  margin-top: 4px;
+}
+
+.mobile-panel-save-btn:active {
+  opacity: 0.82;
+}
+
+/* ── Confirmação de salvo ── */
+.mobile-panel-save-confirm {
+  display: none;
+  text-align: center;
+  color: #7c3aed;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 8px;
+  animation: fadeInUp 0.2s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── BOLINHA PULSANTE NAS LISTAS ────────────────────────────────────────────── */
+
+.anime-ep-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.airing-dot-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.airing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #7c3aed;
+  flex-shrink: 0;
+  animation: airingPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes airingPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.55); opacity: 1; }
+  50%       { box-shadow: 0 0 0 5px rgba(124,58,237,0);  opacity: 0.85; }
+}
+
+.airing-dot-day {
+  font-size: 0.72rem;
+  color: #7c3aed;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1;
+}

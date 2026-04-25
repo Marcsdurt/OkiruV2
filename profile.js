@@ -152,7 +152,12 @@ function renderProfileFavorites() {
         <div class="fav-card-info">
           <div class="fav-card-name" title="${a.name}">${a.name}</div>
           <div class="fav-card-stars">
-            ${Array.from({length:5},(_,j)=>`<span class="fav-card-star${j<a.rating?' filled':''}">★</span>`).join('')}
+            ${Array.from({length:5},(_,j)=>{
+              let cls = '';
+              if (a.rating >= j + 1) cls = ' filled';
+              else if (a.rating >= j + 0.5) cls = ' half';
+              return `<span class="fav-card-star${cls}">★</span>`;
+            }).join('')}
           </div>
         </div>
       </div>`;

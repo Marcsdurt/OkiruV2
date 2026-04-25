@@ -37,6 +37,9 @@ function loadAiringSection(anime) {
   buildCalSelects();
   renderCal(anime);
   updateAiringNextTag(anime);
+
+  // Painel mobile de lançamento
+  loadMobilePanelAiring(anime);
 }
 
 // ─── Toggle ───────────────────────────────────────────────────────────────────
@@ -511,4 +514,56 @@ function closeCalAddPanel() {
   if (!panel) return;
   panel.classList.remove('open');
   setTimeout(() => { panel.style.display = 'none'; }, 180);
+}
+
+// ─── PAINEL MOBILE: LANÇAMENTO ────────────────────────────────────────────────
+
+const WEEKDAY_FULL = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+
+// Carrega estado do painel mobile ao abrir o detalhe
+function loadMobilePanelAiring(anime) {
+  const toggle  = document.getElementById('mobilePanelAiringToggle');
+  const body    = document.getElementById('mobilePanelAiringBody');
+  const select  = document.getElementById('mobilePanelWeekday');
+  const confirm = document.getElementById('mobilePanelSaveConfirm');
+  if (!toggle || !body || !select) return;
+
+  const data    = anime?.airing || {};
+  const enabled = !!data.airingEnabled;   // campo separado do toggle desktop
+  const weekday = data.airingWeekday !== undefined ? String(data.airingWeekday) : '';
+
+  toggle.checked      = enabled;
+  body.style.display  = enabled ? '' : 'none';
+  select.value        = weekday;
+  if (confirm) confirm.style.display = 'none';
+}
+
+// Toggle liga/desliga
+function onMobilePanelAiringToggle() {
+  const enabled = document.getElementById('mobilePanelAiringToggle').checked;
+  const body    = document.getElementById('mobilePanelAiringBody');
+  if (body) body.style.display = enabled ? '' : 'none';
+}
+
+// Salva alterações e mostra confirmação
+function saveMobilePanelAiring() {
+  const anime = mockAnimes.find(a => a.id === currentAnimeId);
+  if (!anime) return;
+
+  const enabled = document.getElementById('mobilePanelAiringToggle').checked;
+  const wd      = document.getElementById('mobilePanelWeekday').value;
+
+  if (!anime.airing) anime.airing = {};
+  anime.airing.airingEnabled = enabled;
+  anime.airing.airingWeekday = wd !== '' ? parseInt(wd) : undefined;
+
+  saveAnimes();
+  renderLists(); // atualiza bolinhas nas listas
+
+  const confirm = document.getElementById('mobilePanelSaveConfirm');
+  if (confirm) {
+    confirm.style.display = 'block';
+    clearTimeout(confirm._hideTimer);
+    confirm._hideTimer = setTimeout(() => { confirm.style.display = 'none'; }, 3000);
+  }
 }

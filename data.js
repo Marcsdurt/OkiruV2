@@ -1,4 +1,6 @@
 // ─── DEFAULT DATA ───
+// Labels de dias da semana para a bolinha de lançamento
+const WEEKDAY_FULL_LABELS = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 const defaultAnimes = [
   { id: 1, name: 'Demon Slayer', status: 'watching', epWatched: 18, epTotal: 26, img: '', rating: 4, genres: ['Ação', 'Fantasia', 'Sobrenatural'], dateAdded: '2024-03-10' },
   { id: 2, name: 'Jujutsu Kaisen', status: 'watching', epWatched: 6, epTotal: 24, img: '', rating: 3, genres: ['Ação', 'Fantasia Sombria'], dateAdded: '2024-05-01' },
@@ -30,11 +32,19 @@ function epLabel(a) {
 }
 
 function starsHTML(rating, small = true) {
-  return Array.from({ length: 5 }, (_, i) =>
-    `<span class="${small ? 'star' : 'detail-star'}${i < rating ? ' filled' : ''}"
-      ${!small ? `onclick="setRating(${i + 1})"` : ''}
-    >★</span>`
-  ).join('');
+  const cls = small ? 'star' : 'detail-star';
+  return Array.from({ length: 5 }, (_, i) => {
+    let fillCls = '';
+    if (rating >= i + 1) fillCls = ' filled';
+    else if (rating >= i + 0.5) fillCls = ' half';
+    if (!small) {
+      return `<span class="${cls}${fillCls}" data-star="${i + 1}"
+        onmouseenter="hoverRating(${i + 1}, event)"
+        onmouseleave="unhoverRating()"
+        onclick="setRating(${i + 1}, event)">★</span>`;
+    }
+    return `<span class="${cls}${fillCls}">★</span>`;
+  }).join('');
 }
 
 function renderLists() {
@@ -77,7 +87,12 @@ function renderList(key, items) {
           <div class="anime-name">${a.name}</div>
           <div class="anime-stars">${starsHTML(a.rating, true)}${seasonBadge}</div>
         </div>
-        <span class="anime-ep">${epLabel(a)}</span>
+        <div class="anime-ep-col">
+          ${(a.airing?.airingEnabled && a.airing?.airingWeekday !== undefined)
+            ? `<div class="airing-dot-wrap"><span class="airing-dot"></span><span class="airing-dot-day">${WEEKDAY_FULL_LABELS[a.airing.airingWeekday] || ''}</span></div>`
+            : ''}
+          <span class="anime-ep">${epLabel(a)}</span>
+        </div>
       </div>`;
   }).join('');
 

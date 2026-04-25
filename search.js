@@ -192,13 +192,41 @@ function closeSmodal() {
 }
 
 function renderSmodalStars() {
-  document.getElementById('smodalStars').innerHTML = Array.from({ length: 5 }, (_, i) =>
-    `<span class="smodal-star${i < smodalRating ? ' filled' : ''}" onclick="setSmodalRating(${i + 1})">★</span>`
-  ).join('');
+  document.getElementById('smodalStars').innerHTML = Array.from({ length: 5 }, (_, i) => {
+    let fillCls = '';
+    if (smodalRating >= i + 1) fillCls = ' filled';
+    else if (smodalRating >= i + 0.5) fillCls = ' half';
+    return `<span class="smodal-star${fillCls}" data-star="${i + 1}"
+      onmouseenter="hoverSmodalRating(${i + 1}, event)"
+      onmouseleave="unhoverSmodalRating()"
+      onclick="setSmodalRating(${i + 1}, event)">★</span>`;
+  }).join('');
 }
 
-function setSmodalRating(value) {
+function setSmodalRating(fullValue, event) {
+  let value = fullValue;
+  if (event) {
+    const rect = event.target.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    if (x < rect.width / 2) value = fullValue - 0.5;
+  }
+  if (smodalRating === value) value = 0;
   smodalRating = value;
+  renderSmodalStars();
+}
+
+function hoverSmodalRating(fullValue, event) {
+  const rect = event.target.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const hoverVal = x < rect.width / 2 ? fullValue - 0.5 : fullValue;
+  document.querySelectorAll('#smodalStars .smodal-star').forEach((s, i) => {
+    s.classList.remove('filled', 'half', 'hover-filled', 'hover-half');
+    if (hoverVal >= i + 1) s.classList.add('hover-filled');
+    else if (hoverVal >= i + 0.5) s.classList.add('hover-half');
+  });
+}
+
+function unhoverSmodalRating() {
   renderSmodalStars();
 }
 

@@ -318,13 +318,39 @@ function updatePubStatus(val) {
 }
 
 // ─── RATING ───────────────────────────────────────────────────────────────────
-function setRating(value) {
+function setRating(fullValue, event) {
   const anime = mockAnimes.find(a => a.id === currentAnimeId);
   if (!anime) return;
+  let value = fullValue;
+  if (event) {
+    const rect = event.target.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    if (x < rect.width / 2) value = fullValue - 0.5;
+  }
+  // Toggle off: clicking same rating removes it
+  if (anime.rating === value) value = 0;
   anime.rating = value;
   saveAnimes();
   document.getElementById('detailStars').innerHTML = starsHTML(value, false);
   renderLists();
+}
+
+function hoverRating(fullValue, event) {
+  const rect = event.target.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const hoverVal = x < rect.width / 2 ? fullValue - 0.5 : fullValue;
+  const stars = document.querySelectorAll('#detailStars .detail-star');
+  stars.forEach((s, i) => {
+    s.classList.remove('filled', 'half', 'hover-filled', 'hover-half');
+    if (hoverVal >= i + 1) s.classList.add('hover-filled');
+    else if (hoverVal >= i + 0.5) s.classList.add('hover-half');
+  });
+}
+
+function unhoverRating() {
+  const anime = mockAnimes.find(a => a.id === currentAnimeId);
+  if (!anime) return;
+  document.getElementById('detailStars').innerHTML = starsHTML(anime.rating, false);
 }
 
 // ─── SEASONS ──────────────────────────────────────────────────────────────────

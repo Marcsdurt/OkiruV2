@@ -537,6 +537,41 @@
         <button class="airing-panel-toggle-btn" id="airingPanelToggleBtn" onclick="toggleDetailMobilePanel()">
           <img src="./icons/angle-right.svg" />
         </button>
+
+        <div class="mobile-panel-content">
+
+          <!-- ── LANÇAMENTO ── -->
+          <div class="mobile-panel-section">
+            <div class="mobile-panel-toggle-row">
+              <span class="mobile-panel-toggle-label" id="mobilePanelAiringLabel">Lançamento</span>
+              <label class="toggle-switch toggle-switch-purple">
+                <input type="checkbox" id="mobilePanelAiringToggle" onchange="onMobilePanelAiringToggle()" />
+                <span class="toggle-track toggle-track-purple"></span>
+              </label>
+            </div>
+
+            <div class="mobile-panel-airing-body" id="mobilePanelAiringBody" style="display:none;">
+              <div class="mobile-panel-field-group">
+                <label class="mobile-panel-field-label">Dia de lançamento</label>
+                <select class="mobile-panel-select" id="mobilePanelWeekday">
+                  <option value="">Selecionar</option>
+                  <option value="0">Domingo</option>
+                  <option value="1">Segunda-feira</option>
+                  <option value="2">Terça-feira</option>
+                  <option value="3">Quarta-feira</option>
+                  <option value="4">Quinta-feira</option>
+                  <option value="5">Sexta-feira</option>
+                  <option value="6">Sábado</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── BOTÃO SALVAR ── -->
+          <button class="mobile-panel-save-btn" onclick="saveMobilePanelAiring()">Salvar alterações</button>
+          <div class="mobile-panel-save-confirm" id="mobilePanelSaveConfirm">✓ Alterações salvas</div>
+
+        </div>
       </div>
       <div class="detail-mobile-panel-overlay" id="detailMobilePanelOverlay" onclick="toggleDetailMobilePanel()"></div>
 
@@ -792,7 +827,7 @@
       </svg>
       Voltar
     </div>
-    <p class="share-hint">Tire um print desta tela para compartilhar</p>
+    <p class="share-hint">Baixe o card ou tire um print para compartilhar</p>
 
     <!-- Aviso quando não há nome -->
     <div id="shareNoAnilist" class="share-no-anilist" style="display:none;">
@@ -829,6 +864,9 @@
       <button class="share-img-btn" onclick="document.getElementById('shareImgInput').click()">
         <img src="./icons/image.svg" width="13" height="13" />
         Alterar imagem
+      </button>
+      <button class="share-img-btn" id="shareDownloadBtn" onclick="downloadShareCard()" style="margin-top:8px;">
+        ↓ Baixar card
       </button>
     </div>
   </div>
